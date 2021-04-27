@@ -5,5 +5,5 @@
 Status: **Work in progress**
 
 ### Important Links
-- [Documentation](Parts Authority - Design Report.pdf)
-- [Project Specs](Parts Authority - Design Report.pdf)
+- (Documentation)[Parts Authority - Design Report.pdf]
+- (Project Specs)[Parts Authority - Design Report.pdf]
