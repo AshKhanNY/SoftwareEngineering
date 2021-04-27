@@ -5,5 +5,5 @@
 Status: **Work in progress**
 
 ### Important Links
-- (Documentation)[Parts Authority - Design Report.pdf]
-- (Project Specs)[Parts Authority - Design Report.pdf]
+- [Design Report](https://github.com/AshKhanNY/SoftwareEngineering/blob/main/Parts%20Authority%20-%20Design%20Report.pdf)
+- [Project Specs](https://github.com/AshKhanNY/SoftwareEngineering/blob/main/Parts%20Authority%20-%20Project%20Specs.pdf)
