@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_moboMenu(object):
     def setupUi(self, moboMenu):
-        moboMenu.setObjectName("moboMenu")
+        #moboMenu.setObjectName("moboMenu")
+        self.PageName = "moboMenu"
         moboMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(moboMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_moboMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("MB")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,14 +231,14 @@ class Ui_moboMenu(object):
         self.c.addWidget(self.contentGroupBox)
         moboMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(moboMenu)
+        #self.retranslateUi(moboMenu)
         QtCore.QMetaObject.connectSlotsByName(moboMenu)
 
     def retranslateUi(self, moboMenu):
         _translate = QtCore.QCoreApplication.translate
         moboMenu.setWindowTitle(_translate("moboMenu", "Parts Authority - Motherboards"))
         self.homeBtn.setText(_translate("moboMenu", "Home"))
-        self.preBtn.setText(_translate("moboMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("moboMenu", "Account"))
         self.cpuBtn.setText(_translate("moboMenu", "CPU"))
         self.gpuBtn.setText(_translate("moboMenu", "GPU"))
         self.memBtn.setText(_translate("moboMenu", "Memory"))

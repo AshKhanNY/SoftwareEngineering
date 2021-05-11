@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_miscMenu(object):
     def setupUi(self, miscMenu):
-        miscMenu.setObjectName("miscMenu")
+        #miscMenu.setObjectName("miscMenu")
+        self.PageName = "miscMenu"
         miscMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(miscMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_miscMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("MISC")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,14 +231,14 @@ class Ui_miscMenu(object):
         self.c.addWidget(self.contentGroupBox)
         miscMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(miscMenu)
+        #self.retranslateUi(miscMenu)
         QtCore.QMetaObject.connectSlotsByName(miscMenu)
 
     def retranslateUi(self, miscMenu):
         _translate = QtCore.QCoreApplication.translate
         miscMenu.setWindowTitle(_translate("miscMenu", "Parts Authority - Miscellaneous"))
         self.homeBtn.setText(_translate("miscMenu", "Home"))
-        self.preBtn.setText(_translate("miscMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("miscMenu", "Account"))
         self.cpuBtn.setText(_translate("miscMenu", "CPU"))
         self.gpuBtn.setText(_translate("miscMenu", "GPU"))
         self.memBtn.setText(_translate("miscMenu", "Memory"))

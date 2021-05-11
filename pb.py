@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import account_widget as AW
 
 
 class Ui_pbMenu(object):
     def setupUi(self, pbMenu):
-        pbMenu.setObjectName("pbMenu")
+        #pbMenu.setObjectName("pbMenu")
+        self.PageName = "pbMenu"
         pbMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(pbMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_pbMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Account Edit
+        self.account = AW.Account()
+        self.verticalGroupLayout.addWidget(self.account)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,12 +231,12 @@ class Ui_pbMenu(object):
         self.c.addWidget(self.contentGroupBox)
         pbMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(pbMenu)
+        #self.retranslateUi(pbMenu)
         QtCore.QMetaObject.connectSlotsByName(pbMenu)
 
     def retranslateUi(self, pbMenu):
         _translate = QtCore.QCoreApplication.translate
-        pbMenu.setWindowTitle(_translate("pbMenu", "Parts Authority - Pre-Built"))
+        pbMenu.setWindowTitle(_translate("pbMenu", "Parts Authority - Account"))
         self.homeBtn.setText(_translate("pbMenu", "Home"))
         self.cpuBtn.setText(_translate("pbMenu", "CPU"))
         self.gpuBtn.setText(_translate("pbMenu", "GPU"))

@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_memMenu(object):
     def setupUi(self, memMenu):
-        memMenu.setObjectName("memMenu")
+        #memMenu.setObjectName("memMenu")
+        self.PageName = "memMenu"
         memMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(memMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_memMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("MEM")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,14 +231,14 @@ class Ui_memMenu(object):
         self.c.addWidget(self.contentGroupBox)
         memMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(memMenu)
+        #self.retranslateUi(memMenu)
         QtCore.QMetaObject.connectSlotsByName(memMenu)
 
     def retranslateUi(self, memMenu):
         _translate = QtCore.QCoreApplication.translate
         memMenu.setWindowTitle(_translate("memMenu", "Parts Authority - Memory"))
         self.homeBtn.setText(_translate("memMenu", "Home"))
-        self.preBtn.setText(_translate("memMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("memMenu", "Account"))
         self.cpuBtn.setText(_translate("memMenu", "CPU"))
         self.gpuBtn.setText(_translate("memMenu", "GPU"))
         self.moboBtn.setText(_translate("memMenu", "Motherboards"))
