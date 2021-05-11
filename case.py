@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_caseMenu(object):
     def setupUi(self, caseMenu):
-        caseMenu.setObjectName("caseMenu")
+        #caseMenu.setObjectName("caseMenu")
+        self.PageName = "caseMenu"
         caseMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(caseMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_caseMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("CASE")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,20 +231,21 @@ class Ui_caseMenu(object):
         self.c.addWidget(self.contentGroupBox)
         caseMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(caseMenu)
+        #self.retranslateUi(caseMenu)
         QtCore.QMetaObject.connectSlotsByName(caseMenu)
 
     def retranslateUi(self, caseMenu):
         _translate = QtCore.QCoreApplication.translate
         caseMenu.setWindowTitle(_translate("caseMenu", "Parts Authority - Cases"))
         self.homeBtn.setText(_translate("caseMenu", "Home"))
-        self.preBtn.setText(_translate("caseMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("caseMenu", "Account"))
         self.cpuBtn.setText(_translate("caseMenu", "CPU"))
         self.gpuBtn.setText(_translate("caseMenu", "GPU"))
         self.memBtn.setText(_translate("caseMenu", "Memory"))
         self.moboBtn.setText(_translate("caseMenu", "Motherboards"))
         self.miscBtn.setText(_translate("caseMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("caseMenu", "Forums"))
+
 
 if __name__ == "__main__":
     import sys
@@ -248,3 +255,4 @@ if __name__ == "__main__":
     ui.setupUi(caseMenu)
     caseMenu.show()
     sys.exit(app.exec_())
+
