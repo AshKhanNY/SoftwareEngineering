@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_gpuMenu(object):
     def setupUi(self, gpuMenu):
-        gpuMenu.setObjectName("gpuMenu")
+        #gpuMenu.setObjectName("gpuMenu")
+        self.PageName = "gpuMenu"
         gpuMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(gpuMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_gpuMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("GPU")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,20 +231,21 @@ class Ui_gpuMenu(object):
         self.c.addWidget(self.contentGroupBox)
         gpuMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(gpuMenu)
+        #self.retranslateUi(gpuMenu)
         QtCore.QMetaObject.connectSlotsByName(gpuMenu)
 
     def retranslateUi(self, gpuMenu):
         _translate = QtCore.QCoreApplication.translate
         gpuMenu.setWindowTitle(_translate("gpuMenu", "Parts Authority - GPU"))
         self.homeBtn.setText(_translate("gpuMenu", "Home"))
-        self.preBtn.setText(_translate("gpuMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("gpuMenu", "Account"))
         self.cpuBtn.setText(_translate("gpuMenu", "CPU"))
         self.memBtn.setText(_translate("gpuMenu", "Memory"))
         self.moboBtn.setText(_translate("gpuMenu", "Motherboards"))
         self.caseBtn.setText(_translate("gpuMenu", "Cases"))
         self.miscBtn.setText(_translate("gpuMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("gpuMenu", "Forums"))
+
 
 
 if __name__ == "__main__":
