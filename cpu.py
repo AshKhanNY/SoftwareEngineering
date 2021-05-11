@@ -9,11 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import Store
 
 
 class Ui_cpuMenu(object):
     def setupUi(self, cpuMenu):
-        cpuMenu.setObjectName("cpuMenu")
+        #cpuMenu.setObjectName("cpuMenu")
+        self.PageName = "cpuMenu"
         cpuMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(cpuMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -212,6 +214,10 @@ class Ui_cpuMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+        #Store Edit
+        self.Store = Store.Store("CPU")
+        self.verticalGroupLayout.addWidget(self.Store)
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -225,20 +231,21 @@ class Ui_cpuMenu(object):
         self.c.addWidget(self.contentGroupBox)
         cpuMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(cpuMenu)
+        #self.retranslateUi(cpuMenu)
         QtCore.QMetaObject.connectSlotsByName(cpuMenu)
 
     def retranslateUi(self, cpuMenu):
         _translate = QtCore.QCoreApplication.translate
         cpuMenu.setWindowTitle(_translate("cpuMenu", "Parts Authority - CPU"))
         self.homeBtn.setText(_translate("cpuMenu", "Home"))
-        self.preBtn.setText(_translate("cpuMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("cpuMenu", "Account"))
         self.gpuBtn.setText(_translate("cpuMenu", "GPU"))
         self.memBtn.setText(_translate("cpuMenu", "Memory"))
         self.moboBtn.setText(_translate("cpuMenu", "Motherboards"))
         self.caseBtn.setText(_translate("cpuMenu", "Cases"))
         self.miscBtn.setText(_translate("cpuMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("cpuMenu", "Forums"))
+
 
 
 if __name__ == "__main__":
@@ -249,3 +256,4 @@ if __name__ == "__main__":
     ui.setupUi(cpuMenu)
     cpuMenu.show()
     sys.exit(app.exec_())
+
