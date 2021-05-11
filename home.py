@@ -13,7 +13,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_HomeWindow(object):
     def setupUi(self, HomeWindow):
-        HomeWindow.setObjectName("HomeWindow")
+        #HomeWindow.setObjectName("HomeWindow")
+        self.PageName = "HomeWindow"
         HomeWindow.setEnabled(True)
         HomeWindow.resize(1000, 700)
         self.centralwidget = QtWidgets.QWidget(HomeWindow)
@@ -88,21 +89,21 @@ class Ui_HomeWindow(object):
         self.preBtn.setFlat(True)
         self.preBtn.setObjectName("preBtn")
         self.buttonLayout.addWidget(self.preBtn)
-        self.pushButton = QtWidgets.QPushButton(self.horizontalFrame)
+        self.cpuBtn = QtWidgets.QPushButton(self.horizontalFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-        self.pushButton.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.pushButton.setStyleSheet("background-color:#00283a;\n"
+        sizePolicy.setHeightForWidth(self.cpuBtn.sizePolicy().hasHeightForWidth())
+        self.cpuBtn.setSizePolicy(sizePolicy)
+        self.cpuBtn.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.cpuBtn.setStyleSheet("background-color:#00283a;\n"
 "border: 1px solid black;\n"
 "color: orange;\n"
 "")
-        self.pushButton.setIconSize(QtCore.QSize(32, 32))
-        self.pushButton.setFlat(True)
-        self.pushButton.setObjectName("pushButton")
-        self.buttonLayout.addWidget(self.pushButton)
+        self.cpuBtn.setIconSize(QtCore.QSize(32, 32))
+        self.cpuBtn.setFlat(True)
+        self.cpuBtn.setObjectName("pushButton")
+        self.buttonLayout.addWidget(self.cpuBtn)
         self.gpuBtn = QtWidgets.QPushButton(self.horizontalFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
@@ -508,8 +509,8 @@ class Ui_HomeWindow(object):
     def retranslateUi(self, HomeWindow):
         _translate = QtCore.QCoreApplication.translate
         HomeWindow.setWindowTitle(_translate("HomeWindow", "Parts Authority"))
-        self.preBtn.setText(_translate("HomeWindow", "Pre-Built PCs"))
-        self.pushButton.setText(_translate("HomeWindow", "CPU"))
+        self.preBtn.setText(_translate("HomeWindow", "Account"))
+        self.cpuBtn.setText(_translate("HomeWindow", "CPU"))
         self.gpuBtn.setText(_translate("HomeWindow", "GPU"))
         self.memBtn.setText(_translate("HomeWindow", "Memory"))
         self.moboBtn.setText(_translate("HomeWindow", "Motherboards"))
@@ -530,6 +531,7 @@ class Ui_HomeWindow(object):
         self.popularPurchase3.setText(_translate("HomeWindow", "Purchase"))
 
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -538,3 +540,4 @@ if __name__ == "__main__":
     ui.setupUi(HomeWindow)
     HomeWindow.show()
     sys.exit(app.exec_())
+
