@@ -13,7 +13,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_forumsMenu(object):
     def setupUi(self, forumsMenu):
-        forumsMenu.setObjectName("forumsMenu")
+        #forumsMenu.setObjectName("forumsMenu")
+        self.PageName = "forumsMenu"
         forumsMenu.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(forumsMenu)
         self.centralwidget.setObjectName("centralwidget")
@@ -225,20 +226,21 @@ class Ui_forumsMenu(object):
         self.c.addWidget(self.contentGroupBox)
         forumsMenu.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(forumsMenu)
+        #self.retranslateUi(forumsMenu)
         QtCore.QMetaObject.connectSlotsByName(forumsMenu)
 
     def retranslateUi(self, forumsMenu):
         _translate = QtCore.QCoreApplication.translate
         forumsMenu.setWindowTitle(_translate("forumsMenu", "Parts Authority - Forums"))
         self.homeBtn.setText(_translate("forumsMenu", "Home"))
-        self.preBtn.setText(_translate("forumsMenu", "Pre-Built"))
+        self.preBtn.setText(_translate("forumsMenu", "Account"))
         self.cpuBtn.setText(_translate("forumsMenu", "CPU"))
         self.gpuBtn.setText(_translate("forumsMenu", "GPU"))
         self.memBtn.setText(_translate("forumsMenu", "Memory"))
         self.moboBtn.setText(_translate("forumsMenu", "Motherboards"))
         self.caseBtn.setText(_translate("forumsMenu", "Cases"))
         self.miscBtn.setText(_translate("forumsMenu", "Miscellaneous"))
+
 
 if __name__ == "__main__":
     import sys
@@ -248,3 +250,4 @@ if __name__ == "__main__":
     ui.setupUi(forumsMenu)
     forumsMenu.show()
     sys.exit(app.exec_())
+
