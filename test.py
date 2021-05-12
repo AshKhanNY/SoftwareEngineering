@@ -84,10 +84,13 @@ def insertToShoppingCart(self, item_id, customer_id):
         cursor.execute(statement, data)
         print("Item added to cart.")
     except Exception as e:
-        print(f"Error in 'insertToShoppingCart' (Possible duplicate entry): {e}\n")
+        print(f"Possible duplicate entry: {e}\n")
         statement = f"UPDATE shoppingcart SET amount = amount + 1 WHERE user = \'{customer_id}\' AND item = \'{item_id}\'"
-        cursor.execute(statement)
-        print("Item amount updated for user.")
+        try:
+            cursor.execute(statement)
+            print("Item amount updated for user.")
+        except Exception as e:
+            print(f"Error in 'insertToShoppingCart': {e}\n")
     db.commit()
 
 # Clear shopping cart
@@ -119,7 +122,7 @@ def purchaseEverything(self, customer_id):
             print("You cannot afford all these items! Please clear shopping cart.")
         else:
             print(f"Purchased! New balance is: {balance - total_price}")
-            # Upon purchasing, add to delivery table
+            # Upon purchasing, add to delivery table and delete from shopping cart
             statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                         "VALUES(%s, %s, %s, %s, %s, %s, %s);"
             customer_cart = fetchFromDatabase(cursor, "shoppingcart", condition=f"user = \'{customer_id}\'")
@@ -131,10 +134,40 @@ def purchaseEverything(self, customer_id):
                                            customer_id,
                                            0,         # Unclaimed until clerk confirms
                                            "Processing"))
+            clearShoppingCart(self, customer_id)
     except Exception as e:
         print(f"Error in 'purchaseEverything': {e}\n")
     db.commit()
 
+# Display taboo list word for word
+def getTabooList(self):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    taboo_list = fetchFromDatabase(cursor, "taboo")
+    for word in taboo_list:
+        print(word[0])  # TODO: Instead of printing, display list on separate window
+
+# Insert word to taboo list
+def insertTabooWord(self, word):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    statement = "INSERT INTO taboo(word) " \
+                "VALUES(%s);"
+    try:
+        cursor.execute(statement, word)
+        print("Taboo word successfully inserted!")
+    except Exception as e:
+        print(f"Error in \'insertTabooWord\': {e}\n")
+
+def deleteTabooWord(self, word):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    statement = f"DELETE FROM taboo WHERE word = {word};"
+    try:
+        cursor.execute(statement, word)
+        print("Taboo word successfully deleted.")
+    except Exception as e:
+        print(f"Error in \'deleteTabooWord\': {e}\n")
 
 # Insert into customer table (requires array of name, email, password)
 def insertCustomer(cursor, arr):
@@ -193,3 +226,64 @@ def insertAdmin(cursor, arr):
         print("Admin successfully inserted!")
     except Exception as e:
         print(f"Error in \'insertAdmin\': {e}\n")
+
+# Preview current bids that are unclaimed
+def viewBids(self):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    bid_list = fetchFromDatabase(cursor, "bid")
+    for bid in bid_list:
+        print(bid[0])
+
+# View deliveries based on company ID
+def viewCompanyDeliveries(self, user_id):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    deliveries = fetchFromDatabase(cursor, "delivery", condition=f"company = \'{user_id}\' AND claimed = \'1\'")
+    for delivery in deliveries:
+        print(delivery)
+
+# View deliveries based on customer ID
+def viewCustomerDeliveries(self, user_id):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    deliveries = fetchFromDatabase(cursor, "delivery", condition=f"customer = \'{user_id}\'")
+    for delivery in deliveries:
+        print(delivery)
+
+# Cast a bid as a delivery company
+def castBid(self, company_id, delivery_num, amount):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    statement = "INSERT INTO bid(company, delivery, amount) VALUES(%s, %s, %s);"
+    company_name = fetchFromDatabase(cursor, "company", condition=f"id = \'{company_id}\'")[1]
+    try:
+        data = (company_id, delivery_num, amount)
+        cursor.execute(statement, data)
+        print(f"New bid added for \'{company_name}\' for order number: {delivery_num} with amount of ${amount}.")
+    except Exception as e:
+        print(f"Possible that bid exists, must update: {e}\n")
+        current_bid_amount = fetchFromDatabase(cursor, "bid", condition=f"delivery = \'{delivery_num}\' "
+                                                                        f"AND company = \'{company_id}\'")[2]
+        if amount <= current_bid_amount:
+            print("Error: You must cast a higher bid than your current one!")
+            return
+        statement = f"UPDATE bid SET amount = \'{amount}\' " \
+                    f"WHERE delivery = \'{delivery_num}\' AND company = \'{company_id}\'"
+        try:
+            cursor.execute(statement)
+            print(f"Bid for \'{company_name}\' for order number: {delivery_num} updated to ${amount}.")
+        except Exception as e:
+            print(f"Error in 'castBid': {e}\n")
+
+# Delivery company can edit delivery status of their own shipments
+def editDeliveryStatus(self, tracking_num, new_status):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    statement = f"UPDATE delivery SET status = {new_status} WHERE tracking_num = \'{tracking_num}\'"
+    try:
+        cursor.execute(statement)
+        print(f"Delivery with ID: {tracking_num} successfully updated.")
+    except Exception as e:
+        print(f"Error in \'editDeliveryStatus\': {e}\n")
+    db.commit()
