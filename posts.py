@@ -1,6 +1,8 @@
+from functools import partial
+
 import mysql.connector
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy, QTextEdit
 
 
 def get_posts(cursor):
@@ -116,9 +118,7 @@ class Posts(QWidget):
             for reply in replies_to_post:
                 self.addReply(reply)
 
-        # Add post functionality at the very bottom
-        self.post_button = QPushButton("Add a new post")
-        self.vbox.addWidget(self.post_button)
+        self.writePost()
 
         self.setLayout(self.vbox)
 
@@ -187,3 +187,43 @@ class Posts(QWidget):
         hbox.addWidget(report_button)
 
         self.vbox.addLayout(hbox)
+
+    def writePost(self):
+        hbox = QHBoxLayout()
+
+        hbox = QHBoxLayout()
+
+        username = QLabel("You")
+        font = QFont()
+        font.setBold(True)
+        username.setFont(font)
+
+        content = QTextEdit("Add a description!")
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(content.sizePolicy().hasHeightForWidth())
+        content.setSizePolicy(size_policy)
+
+        font.setPointSize(12)
+        font.setBold(False)
+        content.setFont(font)
+
+        # Add Report Functionality
+        submit_button = QPushButton("Submit")
+        submit_button.setFixedSize(50, 20)
+
+        hbox.addWidget(username)
+        hbox.addWidget(content)
+
+        hbox.addWidget(submit_button)
+        submit_button.clicked.connect(partial(self.add_post_to_database, content.toPlainText()))
+
+        self.vbox.addLayout(hbox)
+
+    def add_post_to_database(self, text):
+        taboo_list = ["beans", "fruit", "orange"]
+        for word in taboo_list:
+            if word in text:
+                text = text.replace(word, "CENSORED")
+        print(text)

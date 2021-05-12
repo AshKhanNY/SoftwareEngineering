@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 import mysql.connector
@@ -33,7 +34,10 @@ class Store(QWidget):
         product_name = QLabel(item[1])
         product_description = QLabel(item[4])
         product_image = QLabel()
-        #product_image.setPixmap(QPixmap(item['image']))
+
+        #product_image.setPixmap(QPixmap(str(item[0]) + ".jpg"))
+        product_image.setStyleSheet(f"border-image: url({item[0]}.jpg) 0 0 0 0 stretch stretch;")
+
         product_manufacturer = QLabel(item[3])
         hbox.addWidget(product_image)
         product_vbox.addWidget(product_name)
