@@ -110,11 +110,12 @@ class Posts(QWidget):
         # Possibly Update this so that replies go under specific posts
         for post in self.posts:
             self.addPost(post)
+            # Get all of the replies with the same post author
+            replies_to_post = list(filter(lambda x: x[1] == post[0]))
+            for reply in replies_to_post:
+                self.addReply(reply)
 
-        for reply in self.replies:
-            self.addReply(reply)
-
-        # Add post functionality
+        # Add post functionality at the very bottom
         self.postButton = QPushButton("Add a new post")
 
         self.setLayout(self.vbox)
