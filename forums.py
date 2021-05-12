@@ -10,6 +10,8 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import posts
+
 
 class Ui_forumsMenu(object):
     def setupUi(self, forumsMenu):
@@ -213,6 +215,12 @@ class Ui_forumsMenu(object):
         self.verticalGroupLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalGroupLayout.setSpacing(0)
         self.verticalGroupLayout.setObjectName("verticalGroupLayout")
+
+        # Discussion Forums Edit
+        self.Posts = posts.Posts()
+        self.verticalGroupLayout.addWidget(self.Posts)
+
+
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))

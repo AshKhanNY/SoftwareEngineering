@@ -1,5 +1,6 @@
 import mysql.connector
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
 
 
 def get_posts(cursor):
@@ -97,7 +98,7 @@ test()
 
 
 class Posts(QWidget):
-    def __init__(self, item_type):
+    def __init__(self):
         QWidget.__init__(self)
         self.db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
         self.cursor = self.db.cursor()
@@ -111,12 +112,13 @@ class Posts(QWidget):
         for post in self.posts:
             self.addPost(post)
             # Get all of the replies with the same post author
-            replies_to_post = list(filter(lambda x: x[1] == post[0]))
+            replies_to_post = list(filter(lambda x: x[1] == post[0], self.replies))
             for reply in replies_to_post:
                 self.addReply(reply)
 
         # Add post functionality at the very bottom
-        self.postButton = QPushButton("Add a new post")
+        self.post_button = QPushButton("Add a new post")
+        self.vbox.addWidget(self.post_button)
 
         self.setLayout(self.vbox)
 
@@ -124,13 +126,28 @@ class Posts(QWidget):
         hbox = QHBoxLayout()
 
         username = QLabel(post[0])
+        font = QFont()
+        font.setBold(True)
+        username.setFont(font)
+
         content = QLabel(post[1])
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(content.sizePolicy().hasHeightForWidth())
+        content.setSizePolicy(size_policy)
+
+        font.setPointSize(12)
+        font.setBold(False)
+        content.setFont(font)
 
         # Add Reply Functionality
         reply_button = QPushButton("Reply")
+        reply_button.setFixedSize(50, 20)
 
         # Add Report Functionality
         report_button = QPushButton("Report")
+        report_button.setFixedSize(50, 20)
 
         hbox.addWidget(username)
         hbox.addWidget(content)
@@ -143,11 +160,26 @@ class Posts(QWidget):
         hbox = QHBoxLayout()
 
         username = QLabel(reply[0])
-        reply_to = QLabel("Reply to", reply[1])
+        font = QFont()
+        font.setBold(True)
+        username.setFont(font)
+
+        reply_to = QLabel("replying to " + reply[1] + ":")
+
         content = QLabel(reply[2])
+        size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(content.sizePolicy().hasHeightForWidth())
+        content.setSizePolicy(size_policy)
+
+        font.setPointSize(12)
+        font.setBold(False)
+        content.setFont(font)
 
         # Add Report Functionality
         report_button = QPushButton("Report")
+        report_button.setFixedSize(50, 20)
 
         hbox.addWidget(username)
         hbox.addWidget(reply_to)
