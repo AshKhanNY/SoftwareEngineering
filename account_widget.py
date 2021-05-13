@@ -16,6 +16,29 @@ sql_password = "root"
 db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
 cursor = db.cursor()
 
+if Sql.fetchFromDatabase(cursor, "user", condition="signed_in = 1"):
+    Logged_In = True
+    user_type = Sql.getSignedInType(cursor)
+    user_id = Sql.getSignedIn(cursor)[0]
+    if user_type == "company":
+        if Sql.fetchFromDatabase(cursor, "company", condition=f"id = {user_id}")[0][3] == "D":
+            user_type = "Delivery Company"
+        else:
+            user_type = "Supply Company"
+        user.append(Sql.fetchFromDatabase(cursor, "company", condition=f"id = {user_id}")[0])
+    elif user_type == "admin":
+        user_type = "Store Manager"
+        user.append(Sql.fetchFromDatabase(cursor, "admin", condition=f"id = {user_id}")[0])
+    elif user_type == "clerk":
+        user_type = "Store Clerk"
+        user.append(Sql.fetchFromDatabase(cursor, "clerk", condition=f"id = {user_id}")[0])
+    else:
+        user_type = "Customer"
+        user.append(Sql.fetchFromDatabase(cursor, "customer", condition=f"id = {user_id}")[0])
+    user.append(user_type)
+    print(user)
+
+
 def Alert(mess):
     msg = QMessageBox()
     msg.setText(mess)
@@ -45,19 +68,26 @@ class StartPage(Page):
             # View Account Information
             if user[1] == "Customer":
                 # Customer
-                self.grid.addWidget(QLabel("Email Address: "), 1, 0)
-                self.grid.addWidget(QLabel(user[0][2]), 1, 1)
-                self.grid.addWidget(QLabel("View Your Shopping Cart"), 2, 0)
-                self.grid.addWidget(QLabel("Track Your Deliveries"), 3, 0)
+                self.grid.addWidget(QLabel("Name: "), 1, 0)
+                self.grid.addWidget(QLabel(user[0][1]), 1, 1)
+                self.grid.addWidget(QLabel("Email Address: "), 2, 0)
+                self.grid.addWidget(QLabel(user[0][2]), 2, 1)
+                self.grid.addWidget(QLabel("Wallet Balance: "), 3, 0)
+                balance = 0
+                if Sql.fetchFromDatabase(cursor, "wallet", condition=f"user = {user[0][0]}"):
+                    balance = Sql.fetchFromDatabase(cursor, "wallet", condition=f"user = {user[0][0]}")[0][1]
+                self.grid.addWidget(QLabel(str(balance)), 3, 1)
+                self.grid.addWidget(QLabel("View Your Shopping Cart"), 4, 0)
+                self.grid.addWidget(QLabel("Track Your Deliveries"), 5, 0)
                 self.shoppingCartBtn = QPushButton("My Shopping Cart")
                 self.shoppingCartBtn.clicked.connect(self.gotoShoppingCart)
                 self.trackerBtn = QPushButton("Track Deliveries")
                 self.trackerBtn.clicked.connect(self.gotoDeliveries)
-                self.grid.addWidget(self.shoppingCartBtn, 2, 1)
-                self.grid.addWidget(self.trackerBtn, 3, 1)
-                # self.grid.addWidget(QLabel("File a Complaint"), 4, 0)
-                # self.ComplainBtn = QPushButton("Complain")
-                # self.grid.addWidget(self.ComplainBtn, 4, 1)
+                self.grid.addWidget(self.shoppingCartBtn, 4, 1)
+                self.grid.addWidget(self.trackerBtn, 5, 1)
+                self.grid.addWidget(QLabel("File a Complaint"), 6, 0)
+                self.ComplainBtn = QPushButton("Complain")
+                self.grid.addWidget(self.ComplainBtn, 6, 1)
             elif user[1] == "Store Manager":
                 # Admin
                 self.grid.addWidget(QLabel("View Taboo List"), 1, 0)
@@ -107,7 +137,7 @@ class StartPage(Page):
                 self.viewDeliveryBtn = QPushButton("Deliveries")
                 self.viewDeliveryBtn.clicked.connect(partial(self.View, "delivery"))
                 self.grid.addWidget(self.viewDeliveryBtn, 2, 1)
-            else:
+            elif user[1] == "Supply Company":
                 # Computer Parts Company
                 self.grid.addWidget(QLabel("Make Supply Request"), 1, 0)
                 self.sellBtn = QPushButton("Request")
