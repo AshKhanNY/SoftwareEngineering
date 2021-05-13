@@ -39,6 +39,25 @@ def getSignedInType(cursor):
         print(f"Error in \'getSignedInType\': {e}")
     return user_type
 
+# Signs user in
+def signIn(cursor, user_type, user_id):  # User type must be "customer", "company", "admin", or "clerk"
+    statement = f"UPDATE user SET signed_in = \'1\' WHERE id = \'{user_id}\' AND type = {user_type};"
+    try:
+        cursor.execute(statement)
+        name = fetchFromDatabase(cursor, user_type, condition=f"id = \'{user_id}\'")
+        print(f"Signed in as {user_type} {name}")
+    except Exception as e:
+        print(f"Error in \'signIn\': {e}")
+
+# Signs user out
+def signOut(cursor):
+    statement = f"UPDATE user SET signed_in = \'0\';"
+    try:
+        cursor.execute(statement)
+        print(f"Signed everyone out.")
+    except Exception as e:
+        print(f"Error in \'signOut\': {e}")
+
 # Check if something exists in a table
 def existsInTable(cursor, table, atr, val):
     statement = f"SELECT * FROM {table} WHERE {atr} = {val};"

@@ -6,6 +6,7 @@ class MyStack(QStackedLayout):
     def __init__(self):
         QStackedLayout.__init__(self)
         self.pages = {}
+        self.user = []
 
     def gotoHomePage(self):
         self.setCurrentWidget(self.pages['HomeWindow'].centralwidget)
@@ -53,6 +54,7 @@ def addPage(ui):
     ui.setupUi(mw)
     stack.addWidget(ui.centralwidget)
     stack.pages.update({ui.PageName : ui})
+    ui.setStack(stack)
     if ui.PageName != "HomeWindow":
         ui.homeBtn.clicked.connect(stack.gotoHomePage)
     if ui.PageName != "caseMenu":
@@ -87,4 +89,3 @@ w.setLayout(stack)
 mw.setCentralWidget(w)
 mw.show()
 sys.exit(app.exec_())
-
