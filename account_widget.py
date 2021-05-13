@@ -7,6 +7,8 @@ import Sql
 from functools import partial
 import random
 
+import bids
+
 Logged_In = False
 user = []
 account_pages = {}
@@ -431,8 +433,10 @@ class BiddingPage(Page):
         Page.__init__(self, stack)
         account_pages.update({"BiddingPage": self})
         self.vbox = QVBoxLayout()
-        self.L1 = QLabel("Bidding")
-        self.vbox.addWidget(self.L1)
+
+        self.Biddings = bids.Bids()
+        self.vbox.addWidget(self.Biddings)
+
         self.BackBtn = QPushButton("Exit Bidding")
         self.BackBtn.clicked.connect(self.gotoStartPage)
         self.vbox.addWidget(self.BackBtn)
