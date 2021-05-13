@@ -76,6 +76,7 @@ class StartPage(Page):
                 self.unBanBtn = QPushButton("Unban User")
                 self.grid.addWidget(self.unBanBtn, 4, 3)
                 self.viewRequestsBtn = QPushButton("Requests")
+                self.viewRequestsBtn.clicked.connect(partial(self.View, "requests"))
                 self.grid.addWidget(self.viewRequestsBtn, 5, 1)
                 self.grid.addWidget(QLabel("View Requests"), 5, 0)
                 # self.grid.addWidget(QLabel("View Complaints"), 5, 0)
@@ -239,6 +240,15 @@ class StartPage(Page):
             print(f"Error in \'editDeliveryStatus\': {e}\n")
         db.commit()
 
+    def viewSupplyRequests(self):
+        db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+        cursor = db.cursor()
+        requests = Sql.fetchFromDatabase(cursor, "supplyrequest")
+        text = ""
+        for request in requests:
+            text = text + str(request) + "\n"
+        return text
+    
     def View(self, table):
         msg = QMessageBox()
         msg.setText("")
@@ -250,6 +260,8 @@ class StartPage(Page):
             msg.setText(self.viewBids())
         elif table == "delivery":
             msg.setText(self.viewCompanyDeliveries(user[0][0]))
+        elif table == "requests":
+            msg.setText(self.viewSupplyRequests())
         msg.exec()
 
     def logout(self):
