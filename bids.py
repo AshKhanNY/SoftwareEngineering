@@ -104,14 +104,13 @@ class Bids(QWidget):
         self.vbox.addLayout(hbox)
 
     def add_bid_to_database(self, delivery, amount):
-        try:
-            delivery = int(delivery.toPlainText())
-            amount = int(amount.toPlainText())
-        except:
+        delivery = int(delivery.toPlainText())
+        amount = int(amount.toPlainText())
+        if amount < 0:
             message_box("Please only input valid numbers!")
-            return
-        self.castBid(delivery, amount)
-        message_box("You have cast a bid! Hooray!")
+        else:
+            self.castBid(delivery, amount)
+            message_box("You have cast a bid! Hooray!")
 
     def castBid(self, delivery, amount):
         try:
