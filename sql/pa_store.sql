@@ -281,7 +281,7 @@ CREATE TABLE `customer` (
   `joined` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,7 +290,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (1,'Alpha','a@gmail.com','A','2021-04-29 20:29:05'),(2,'Bravo','b@gmail.com','B','2021-04-29 20:29:05'),(3,'Charlie','c@gmail.com','C','2021-04-29 20:29:05'),(4,'Delta','d@gmail.com','D','2021-04-29 20:29:05'),(5,'Echo','e@gmail.com','E','2021-04-29 20:29:05'),(6,'Foxtrot','f@gmail.com','F','2021-04-29 20:29:05'),(7,'Golf','g@gmail.com','G','2021-04-29 20:29:05'),(8,'Hotel','h@gmail.com','H','2021-04-29 20:29:05'),(9,'India','i@gmail.com','I','2021-04-29 20:29:05'),(10,'Juliet','j@gmail.com','J','2021-04-29 20:29:05');
+INSERT INTO `customer` VALUES (1,'Alpha','a@gmail.com','A','2021-04-29 20:29:05'),(2,'Bravo','b@gmail.com','B','2021-04-29 20:29:05'),(3,'Charlie','c@gmail.com','C','2021-04-29 20:29:05'),(4,'Delta','d@gmail.com','D','2021-04-29 20:29:05'),(5,'Echo','e@gmail.com','E','2021-04-29 20:29:05'),(6,'Foxtrot','f@gmail.com','F','2021-04-29 20:29:05'),(7,'Golf','g@gmail.com','G','2021-04-29 20:29:05'),(8,'Hotel','h@gmail.com','H','2021-04-29 20:29:05'),(9,'India','i@gmail.com','I','2021-04-29 20:29:05'),(10,'Juliet','j@gmail.com','J','2021-04-29 20:29:05'),(11,'Bob','Bob@gmail.com','Bob','2021-05-13 11:51:57'),(12,'Z','z@gmail.com','z','2021-05-13 12:02:25');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -401,6 +401,35 @@ LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
 INSERT INTO `post` VALUES (1,1,'Seriously, when the h*ll are these new graphics cards coming out!'),(2,1,'I\'ve been waiting FOREVER, my wallet is collecting dust. What type of business doesn\'t want money from ME.'),(3,2,'Calm down Alpha, you can get banned if you go out of hand.'),(4,4,'Alpha\'s got a point though. I\'ve been trying to get my hands on a RTX 3060 for ages and it\'s nowhere to be found. UGH'),(5,3,'I\'ll just stick to my Raspberry Pi, thank you very much. It runs Minecraft too! Well, sorta...');
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `prebuild`
+--
+
+DROP TABLE IF EXISTS `prebuild`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `prebuild` (
+  `id` int NOT NULL,
+  `CPU` varchar(100) DEFAULT NULL,
+  `GPU` varchar(100) DEFAULT NULL,
+  `Memory` varchar(100) DEFAULT NULL,
+  `Motherboard` varchar(100) DEFAULT NULL,
+  `Case` varchar(100) DEFAULT NULL,
+  `Price` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `prebuild`
+--
+
+LOCK TABLES `prebuild` WRITE;
+/*!40000 ALTER TABLE `prebuild` DISABLE KEYS */;
+INSERT INTO `prebuild` VALUES (1,'i7-770','GeForce RTX 2060','Vengeance RGB PRO 16GB','MSI XCD45','Musetex Tower',1500),(2,'i7-700','GeForce RTX 2060','Vengeance RGB PRO 16GB','MSI JHK99','CC Carbide',900),(3,'i8-990','GeForce RTX 2060','Vengeance RGB PRO 16GB','ASUS Prime A','CC Carbide',1800),(4,'i8-1100','GeForce RTX 2060','Vengeance RGB PRO 16GB','Y4CNC 123','Musetex Tower',2700),(5,'i9-9900K','GeForce RTX 3090','Vengeance RGB PRO 32GB','ASUS Prime O','CC Carbide',2000),(6,'i9-9900K','GeForce RTX 3090','Vengeance RGB PRO 64GB','MSI 9000','Musetex Tower',3700);
+/*!40000 ALTER TABLE `prebuild` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -523,7 +552,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin',1),(1,'clerk',0),(1,'company',0),(1,'customer',0),(2,'admin',0),(2,'clerk',0),(2,'company',0),(2,'customer',0),(3,'admin',0),(3,'clerk',0),(3,'company',0),(3,'customer',0),(4,'admin',0),(4,'clerk',0),(4,'company',0),(4,'customer',0),(5,'admin',0),(5,'company',0),(5,'customer',0),(6,'company',0),(6,'customer',0),(7,'company',0),(7,'customer',0),(8,'customer',0),(9,'customer',0),(10,'customer',0);
+INSERT INTO `user` VALUES (1,'admin',1),(1,'clerk',0),(1,'company',0),(1,'customer',0),(2,'admin',0),(2,'clerk',0),(2,'company',0),(2,'customer',0),(3,'admin',0),(3,'clerk',0),(3,'company',0),(3,'customer',0),(4,'admin',0),(4,'clerk',0),(4,'company',0),(4,'customer',0),(5,'admin',0),(5,'company',0),(5,'customer',0),(6,'company',0),(6,'customer',0),(7,'company',0),(7,'customer',0),(8,'customer',0),(9,'customer',0),(10,'customer',0),(11,'customer',0),(12,'customer',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -560,4 +589,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-13 11:30:13
+-- Dump completed on 2021-05-13 14:57:09
