@@ -151,7 +151,9 @@ def purchaseEverything(self, customer_id):
             print("You cannot afford all these items! Please clear shopping cart.")
         else:
             print(f"Purchased! New balance is: {balance - total_price}")
-            # Upon purchasing, add to delivery table and delete from shopping cart
+            # Upon purchasing, add to delivery table, update wallet, and delete from shopping cart
+            statement = f"UPDATE wallet SET amount = \'{balance - total_price}\' WHERE user = \'{customer_id}\'"
+            cursor.execute(statement)
             statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                         "VALUES(%s, %s, %s, %s, %s, %s, %s);"
             customer_cart = fetchFromDatabase(cursor, "shoppingcart", condition=f"user = \'{customer_id}\'")
@@ -271,6 +273,8 @@ def insertUser(cursor, user_id, user_type):
     except Exception as e:
         print(f"Error in \'insertUser\': {e}\n")
 
+# ************** DELIVERIES ***************
+
 # Preview current bids that are unclaimed
 def viewBids(self):
     db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
@@ -331,3 +335,98 @@ def editDeliveryStatus(self, tracking_num, new_status):
     except Exception as e:
         print(f"Error in \'editDeliveryStatus\': {e}\n")
     db.commit()
+
+# *************** SUPPLIES *****************
+# View Supply Request
+def viewSupplyRequests(self):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    requests = fetchFromDatabase(cursor, "supplyrequest")
+    for request in requests:
+        print(request)
+
+# Cast supply request
+def castSupplyRequest(self, text, company_id):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    statement = "INSERT INTO supplyrequest(supply_id, company, reason) " \
+                "VALUES(%s, %s, %s);"
+    try:
+        sup_arr = fetchFromDatabase(cursor, "supplyrequest")
+        id_num = len(sup_arr) + 1
+        cursor.execute(statement, (id_num, company_id, text))
+        print("Successfully casted reply!")
+    except Exception as e:
+        print(f"Error in \'castSupplyRequest\': {e}\n")
+
+# Add supply to store
+def insertItem(cursor, arr):
+    statement = "INSERT INTO item(id, name, price, manufacturer, details, type, amount) " \
+                "VALUES(%s, %s, %s, %s, %s, %s, %s);"
+    try:
+        item_arr = fetchFromDatabase(cursor, "item")
+        id_num = len(item_arr) + 1
+        cursor.execute(statement, (id_num,   # ID
+                                   arr[0],   # Name
+                                   arr[1],   # Price
+                                   arr[2],   # Manufacturer
+                                   arr[3],   # Details
+                                   arr[4],   # Type
+                                   arr[5]))  # Amount
+        print("Item successfully inserted!")
+    except Exception as e:
+        print(f"Error in \'insertItem\': {e}\n")
+
+# ************ Reports / Banning ************
+def banUser(cursor, user_id, user_type, reason):
+    if user_type == "customer":
+        statement = "INSERT INTO blacklistedcustomer(customer_id, reason) " \
+                    "VALUES(%s, %s);"
+    else:
+        statement = "INSERT INTO blacklistedcompany(company_id, reason) " \
+                    "VALUES(%s, %s);"
+    try:
+        cursor.execute(statement, (user_id, reason))
+        print(f"Banned user {user_id} for: {reason}")
+    except Exception as e:
+        print(f"Error in \'banUser\': {e}\n")
+
+def viewReportList(cursor, user_type):
+    return fetchFromDatabase(cursor, f"{user_type}report")
+
+def reportUser(cursor, user_id, user_type, reason):
+    statement = f"INSERT INTO {user_type}report({user_type}_id, num_reported, reason) " \
+                "VALUES(%s, %s, %s);"
+    try:
+        report_count = 1
+        if fetchFromDatabase(cursor, f"{user_type}report", condition=f"{user_type}_id = {user_id}"):
+            report_count = fetchFromDatabase(cursor, f"{user_type}report", condition=f"{user_type}_id = {user_id}")[0][1]
+        cursor.execute(statement, (user_id, report_count, reason))
+        print(f"Reported user {user_id} for: {reason}")
+    except Exception as e:
+        print(f"Error in \'reportUser\': {e}\n")
+
+# ********** CREDIT CARD / WALLET ***********
+def addCreditCard(cursor, user_id, name, number, expiration):
+    statement = f"INSERT INTO creditcard(user, name, number, expiration) " \
+                "VALUES(%s, %s, %s, %s);"
+    try:
+        cursor.execute(statement, (user_id, name, number, expiration))
+        print("Successfully added credit card.")
+    except Exception as e:
+        print(f"Error in \'addCreditCard\': {e}\n")
+
+def addFundsToWallet(cursor, user_id, amount):
+    statement = "INSERT INTO wallet(user, amount) VALUES(%s, %s);"
+    try:
+        cursor.execute(statement, (user_id, amount))
+        print(f"New wallet created.")
+    except Exception as e:
+        print(f"Possible that wallet exists, must update: {e}\n")
+        current_wallet_amount = fetchFromDatabase(cursor, "wallet", condition=f"user = {user_id}")[0][1]
+        statement = f"UPDATE wallet SET amount = \'{amount + current_wallet_amount}\' WHERE user = \'{user_id}\'"
+        try:
+            cursor.execute(statement)
+            print(f"Wallet updated to ${amount + current_wallet_amount}.")
+        except Exception as e:
+            print(f"Error in 'addFundsToWallet': {e}\n")

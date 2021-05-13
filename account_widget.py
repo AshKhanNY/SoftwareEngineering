@@ -16,6 +16,13 @@ sql_password = "root"
 db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
 cursor = db.cursor()
 
+def Alert(mess):
+    msg = QMessageBox()
+    msg.setText(mess)
+    msg.setWindowTitle("Alert")
+    msg.setStandardButtons(QMessageBox.Close)
+    msg.exec()
+
 class Page(QWidget):
     def __init__(self, stack):
         QWidget.__init__(self)
@@ -77,6 +84,10 @@ class StartPage(Page):
                 self.grid.addWidget(self.BanBtn, 4, 2)
                 self.unBanBtn = QPushButton("Unban User")
                 self.grid.addWidget(self.unBanBtn, 4, 3)
+                self.viewRequestsBtn = QPushButton("Requests")
+                self.viewRequestsBtn.clicked.connect(partial(self.View, "requests"))
+                self.grid.addWidget(self.viewRequestsBtn, 5, 1)
+                self.grid.addWidget(QLabel("View Requests"), 5, 0)
                 # self.grid.addWidget(QLabel("View Complaints"), 5, 0)
                 # self.ComplaintBtn = QPushButton("Complaints")
                 # self.grid.addWidget(self.ComplaintBtn, 5, 1)
@@ -147,7 +158,7 @@ class StartPage(Page):
         cursor = db.cursor()
         word = self.TabooLine.text()
         if word == "":
-            print("No Word Entered")
+            Alert("No Word Entered")
             return 0
         print(word)
         statement = "INSERT INTO taboo(word) " \
@@ -155,7 +166,7 @@ class StartPage(Page):
         try:
             cursor.execute(statement)
             db.commit()
-            print("Taboo word successfully inserted!")
+            Alert("Taboo word successfully inserted!")
         except Exception as e:
             print(f"Error in \'insertTabooWord\': {e}\n")
         db.close()
@@ -165,14 +176,14 @@ class StartPage(Page):
         cursor = db.cursor()
         word = self.TabooLine.text()
         if word == "":
-            print("No Word Entered")
+            Alert("No Word Entered")
             return 0
         print(word)
         statement = f"DELETE FROM taboo WHERE word = \"" + word + "\";"
         try:
             cursor.execute(statement)
             db.commit()
-            print("Taboo word successfully deleted.")
+            Alert("Taboo word successfully deleted.")
         except Exception as e:
             print(f"Error in \'deleteTabooWord\': {e}\n")
         db.close()
@@ -238,6 +249,16 @@ class StartPage(Page):
             print(f"Error in \'editDeliveryStatus\': {e}\n")
         db.commit()
 
+    def viewSupplyRequests(self):
+        db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+        cursor = db.cursor()
+        requests = Sql.fetchFromDatabase(cursor, "supplyrequest")
+        text = "ALL SUPPLY REQUESTS\n\n"
+        for request in requests:
+            company_name = Sql.fetchFromDatabase(cursor, "company", condition=f"id = {request[1]}")[0][1]
+            text = f"{text}{company_name}: {request[2]}\n"
+        return text
+    
     def View(self, table):
         msg = QMessageBox()
         msg.setText("")
@@ -249,6 +270,8 @@ class StartPage(Page):
             msg.setText(self.viewBids())
         elif table == "delivery":
             msg.setText(self.viewCompanyDeliveries(user[0][0]))
+        elif table == "requests":
+            msg.setText(self.viewSupplyRequests())
         msg.exec()
 
     def logout(self):
@@ -332,7 +355,7 @@ class ShoppingCart(Page):
         statement = f"DELETE FROM shoppingcart WHERE user = \'{customer_id}\';"
         try:
             cursor.execute(statement)
-            print("Shopping cart cleared!")
+            Alert("Shopping cart cleared!")
         except Exception as e:
             print(f"Error in 'clearShoppingCart': {e}\n")
         db.commit()
@@ -353,11 +376,11 @@ class ShoppingCart(Page):
                 item_price = Sql.fetchFromDatabase(cursor, "item", condition=f"id = \'{i[1]}\'")[0][2]  # Grabbing item price
                 total_price += item_price
             if total_price == 0:
-                print("You have no items in your shopping cart!")
+                Alert("You have no items in your shopping cart!")
             elif total_price > balance:
-                print("You cannot afford all these items! Please clear shopping cart.")
+                Alert("You cannot afford all these items! Please clear shopping cart.")
             else:
-                print(f"Purchased! New balance is: {balance - total_price}")
+                Alert(f"Purchased! New balance is: {balance - total_price}")
                 # Upon purchasing, add to delivery table and delete from shopping cart
                 statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                             "VALUES(%s, %s, %s, %s, %s, %s, %s);"
