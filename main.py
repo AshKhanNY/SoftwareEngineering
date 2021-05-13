@@ -44,7 +44,6 @@ class MyStack(QStackedLayout):
         self.setCurrentWidget(self.pages['pbMenu'].centralwidget)
         self.pages['pbMenu'].retranslateUi(mw)
 
-
 app = QApplication(sys.argv)
 mw = QMainWindow()
 w = QWidget(mw)
