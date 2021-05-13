@@ -14,13 +14,11 @@ sql_password = "root"
 db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
 cursor = db.cursor()
 
-
 class Page(QWidget):
     def __init__(self, stack):
         QWidget.__init__(self)
         self.stack = stack
         self.stack.addWidget(self)
-
 
 class StartPage(Page):
     def __init__(self, stack):
@@ -564,7 +562,7 @@ class LoginPage(Page):
                         user.append(self.UseCaseField.currentText())
                         Logged_In = True
                         user_id = Sql.fetchFromDatabase(cursor, "customer",
-                                                        condition=f"email = \'{row[1]}\' AND password = \'{row[2]}\'")[0][0]
+                                                        condition=f"email = \'{row[2]}\' AND password = \'{row[3]}\'")[0][0]
                         Sql.signIn(cursor, "customer", user_id)
                         db.commit()
                         msg = QMessageBox()

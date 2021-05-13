@@ -39,6 +39,15 @@ def getSignedInType(cursor):
         print(f"Error in \'getSignedInType\': {e}")
     return user_type
 
+# Check if someone is signed in
+def getSignedIn(cursor):
+    user = []
+    try:
+        user = fetchFromDatabase(cursor, "user", condition="signed_in = 1")[0]
+    except Exception as e:
+        print(f"Error in \'getSignedInType\': {e}")
+    return user
+
 # Signs user in
 def signIn(cursor, user_type, user_id):  # User type must be "customer", "company", "admin", or "clerk"
     statement = f"UPDATE user SET signed_in = 1 WHERE id = {user_id} AND type = \'{user_type}\';"
