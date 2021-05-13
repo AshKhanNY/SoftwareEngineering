@@ -88,6 +88,7 @@ class StartPage(Page):
                 # Delivery Company
                 self.grid.addWidget(QLabel("Bid on Deliveries"), 1, 0)
                 self.bidBtn = QPushButton("Cast Bids")
+                self.bidBtn.clicked.connect(self.gotoBidding)
                 self.grid.addWidget(self.bidBtn, 1, 1)
                 self.grid.addWidget(QLabel("View Company Deliveries"), 2, 0)
                 self.viewDeliveryBtn = QPushButton("Deliveries")
@@ -122,6 +123,10 @@ class StartPage(Page):
     def gotoDeliveries(self):
         dv = DeliveryPage(self.stack)
         self.stack.setCurrentWidget(dv)
+        
+    def gotoBidding(self):
+        bidding = BiddingPage(self.stack)
+        self.stack.setCurrentWidget(bidding)
 
     # Display taboo list word for word
     def getTabooList(self):
@@ -419,6 +424,23 @@ class DeliveryPage(Page):
 
     def gotoStartPage(self):
         self.stack.setCurrentWidget(account_pages["StartPage"])
+
+        
+class BiddingPage(Page):
+    def __init__(self, stack):
+        Page.__init__(self, stack)
+        account_pages.update({"BiddingPage": self})
+        self.vbox = QVBoxLayout()
+        self.L1 = QLabel("Bidding")
+        self.vbox.addWidget(self.L1)
+        self.BackBtn = QPushButton("Exit Bidding")
+        self.BackBtn.clicked.connect(self.gotoStartPage)
+        self.vbox.addWidget(self.BackBtn)
+        self.setLayout(self.vbox)
+
+    def gotoStartPage(self):
+        self.stack.setCurrentWidget(account_pages["StartPage"])
+
 
 
 class RegisterPage(Page):
