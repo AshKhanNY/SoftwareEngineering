@@ -86,5 +86,6 @@ addPage(pb.Ui_pbMenu())
 
 w.setLayout(stack)
 mw.setCentralWidget(w)
+mw.showMaximized()
 mw.show()
 sys.exit(app.exec_())
