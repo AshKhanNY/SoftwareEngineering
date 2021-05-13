@@ -50,6 +50,7 @@ def getSignedIn(cursor):
 
 # Signs user in
 def signIn(cursor, user_type, user_id):  # User type must be "customer", "company", "admin", or "clerk"
+    signOut(cursor)
     statement = f"UPDATE user SET signed_in = 1 WHERE id = {user_id} AND type = \'{user_type}\';"
     try:
         cursor.execute(statement)
