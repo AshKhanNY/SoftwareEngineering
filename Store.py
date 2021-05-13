@@ -6,6 +6,13 @@ from functools import partial
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Sql
 
+def Alert(mess):
+    msg = QMessageBox()
+    msg.setText(mess)
+    msg.setWindowTitle("Alert")
+    msg.setStandardButtons(QMessageBox.Close)
+    msg.exec()
+
 def Connect(item_type):
     db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
     cursor = db.cursor()
@@ -87,7 +94,7 @@ class Store(QWidget):
                 except Exception as e:
                     print(f"Error in 'insertToShoppingCart': {e}\n")
             else:
-                print("This user has no shopping cart")
+                Alert("This user has no shopping cart")
         else:
-            print("Only Registered Users can add items to shopping cart")
+            Alert("Only Registered Users can add items to shopping cart")
 
