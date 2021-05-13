@@ -89,6 +89,18 @@ def remove_posts_from_author(author_id):
     db.commit()
 
 
+# Fetching specific values from database
+def fetchFromDatabase(cursor, table, item="*", condition=""):
+    try:
+        if condition != "":
+            cursor.execute(f"SELECT {item} FROM {table} WHERE {condition};")
+        else:
+            cursor.execute(f"SELECT {item} FROM {table};")
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error in \'fetchFromDatabase\': {e}")
+        return False
+
 def test():
     db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
     cursor = db.cursor()
@@ -199,6 +211,8 @@ class Posts(QWidget):
         username.setFont(font)
 
         content = QTextEdit("Add a description!")
+        content.setObjectName("Description")
+
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
@@ -217,13 +231,20 @@ class Posts(QWidget):
         hbox.addWidget(content)
 
         hbox.addWidget(submit_button)
-        submit_button.clicked.connect(partial(self.add_post_to_database, content.toPlainText()))
+        submit_button.clicked.connect(partial(self.add_post_to_database, content))
 
         self.vbox.addLayout(hbox)
 
-    def add_post_to_database(self, text):
-        taboo_list = ["beans", "fruit", "orange"]
+    def add_post_to_database(self, content):
+        taboo_list = fetchFromDatabase(self.cursor, "taboo")
+        print(taboo_list)
+        text = content.toPlainText()
         for word in taboo_list:
-            if word in text:
-                text = text.replace(word, "CENSORED")
+            if word[0] in text:
+                text = text.replace(word[0], "*" * len(word[0]))
+        content.setPlainText(text)
+
+        # Posting to the database
+        add_post(1, text)
+
         print(text)
