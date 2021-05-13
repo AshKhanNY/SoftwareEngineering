@@ -14,6 +14,13 @@ sql_password = "root"
 db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
 cursor = db.cursor()
 
+def Alert(mess):
+    msg = QMessageBox()
+    msg.setText(mess)
+    msg.setWindowTitle("Alert")
+    msg.setStandardButtons(QMessageBox.Close)
+    msg.exec()
+
 class Page(QWidget):
     def __init__(self, stack):
         QWidget.__init__(self)
@@ -149,7 +156,7 @@ class StartPage(Page):
         cursor = db.cursor()
         word = self.TabooLine.text()
         if word == "":
-            print("No Word Entered")
+            Alert("No Word Entered")
             return 0
         print(word)
         statement = "INSERT INTO taboo(word) " \
@@ -157,7 +164,7 @@ class StartPage(Page):
         try:
             cursor.execute(statement)
             db.commit()
-            print("Taboo word successfully inserted!")
+            Alert("Taboo word successfully inserted!")
         except Exception as e:
             print(f"Error in \'insertTabooWord\': {e}\n")
         db.close()
@@ -167,14 +174,14 @@ class StartPage(Page):
         cursor = db.cursor()
         word = self.TabooLine.text()
         if word == "":
-            print("No Word Entered")
+            Alert("No Word Entered")
             return 0
         print(word)
         statement = f"DELETE FROM taboo WHERE word = \"" + word + "\";"
         try:
             cursor.execute(statement)
             db.commit()
-            print("Taboo word successfully deleted.")
+            Alert("Taboo word successfully deleted.")
         except Exception as e:
             print(f"Error in \'deleteTabooWord\': {e}\n")
         db.close()
@@ -346,7 +353,7 @@ class ShoppingCart(Page):
         statement = f"DELETE FROM shoppingcart WHERE user = \'{customer_id}\';"
         try:
             cursor.execute(statement)
-            print("Shopping cart cleared!")
+            Alert("Shopping cart cleared!")
         except Exception as e:
             print(f"Error in 'clearShoppingCart': {e}\n")
         db.commit()
@@ -367,11 +374,11 @@ class ShoppingCart(Page):
                 item_price = Sql.fetchFromDatabase(cursor, "item", condition=f"id = \'{i[1]}\'")[0][2]  # Grabbing item price
                 total_price += item_price
             if total_price == 0:
-                print("You have no items in your shopping cart!")
+                Alert("You have no items in your shopping cart!")
             elif total_price > balance:
-                print("You cannot afford all these items! Please clear shopping cart.")
+                Alert("You cannot afford all these items! Please clear shopping cart.")
             else:
-                print(f"Purchased! New balance is: {balance - total_price}")
+                Alert(f"Purchased! New balance is: {balance - total_price}")
                 # Upon purchasing, add to delivery table and delete from shopping cart
                 statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                             "VALUES(%s, %s, %s, %s, %s, %s, %s);"
