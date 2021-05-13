@@ -530,6 +530,9 @@ class Ui_HomeWindow(object):
         self.popularTitle3.setText(_translate("HomeWindow", "Most Popular #3"))
         self.popularPurchase3.setText(_translate("HomeWindow", "Purchase"))
 
+    def setStack(self, stack):
+        self.stack = stack
+
 
 
 if __name__ == "__main__":
@@ -540,4 +543,3 @@ if __name__ == "__main__":
     ui.setupUi(HomeWindow)
     HomeWindow.show()
     sys.exit(app.exec_())
-

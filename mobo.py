@@ -246,6 +246,10 @@ class Ui_moboMenu(object):
         self.miscBtn.setText(_translate("moboMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("moboMenu", "Forums"))
 
+    def setStack(self, stack):
+        self.stack = stack
+        self.Store.setStack(self.stack)
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

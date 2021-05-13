@@ -246,6 +246,10 @@ class Ui_cpuMenu(object):
         self.miscBtn.setText(_translate("cpuMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("cpuMenu", "Forums"))
 
+    def setStack(self, stack):
+        self.stack = stack
+        self.Store.setStack(self.stack)
+
 
 
 if __name__ == "__main__":
@@ -256,4 +260,3 @@ if __name__ == "__main__":
     ui.setupUi(cpuMenu)
     cpuMenu.show()
     sys.exit(app.exec_())
-

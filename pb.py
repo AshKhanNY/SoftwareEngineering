@@ -246,6 +246,15 @@ class Ui_pbMenu(object):
         self.miscBtn.setText(_translate("pbMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("pbMenu", "Forums"))
 
+    def getUser(self):
+        return self.account.getUser()
+
+    def getLoggedIn(self):
+        return self.account.getLoggedIn()
+
+    def setStack(self, stack):
+        self.stack = stack
+
 
 if __name__ == "__main__":
     import sys

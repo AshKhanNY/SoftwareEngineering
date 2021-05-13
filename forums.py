@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 import posts
 
 
@@ -219,7 +218,7 @@ class Ui_forumsMenu(object):
         # Discussion Forums Edit
         self.Posts = posts.Posts()
         self.verticalGroupLayout.addWidget(self.Posts)
-
+        
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
@@ -248,6 +247,9 @@ class Ui_forumsMenu(object):
         self.caseBtn.setText(_translate("forumsMenu", "Cases"))
         self.miscBtn.setText(_translate("forumsMenu", "Miscellaneous"))
 
+    def setStack(self, stack):
+        self.stack = stack
+
 
 if __name__ == "__main__":
     import sys
@@ -257,4 +259,3 @@ if __name__ == "__main__":
     ui.setupUi(forumsMenu)
     forumsMenu.show()
     sys.exit(app.exec_())
-

@@ -246,6 +246,10 @@ class Ui_gpuMenu(object):
         self.miscBtn.setText(_translate("gpuMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("gpuMenu", "Forums"))
 
+    def setStack(self, stack):
+        self.stack = stack
+        self.Store.setStack(self.stack)
+
 
 
 if __name__ == "__main__":

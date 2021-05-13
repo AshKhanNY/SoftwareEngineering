@@ -4,6 +4,7 @@ import mysql.connector
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy, QTextEdit
 
+sql_password = "root"
 
 def get_posts(cursor):
     query = "SELECT * FROM post"
@@ -50,7 +51,7 @@ def format_replies(cursor, replies):
 
 
 def add_post(author_id, content):
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     query = "INSERT INTO post(author, content) VALUES(%s, %s)"
     try:
@@ -62,7 +63,7 @@ def add_post(author_id, content):
 
 
 def add_reply(author_id, reply_to_id, content):
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     query = "INSERT INTO reply(author, thread, content) VALUES(%s, %s, %s)"
     try:
@@ -74,7 +75,7 @@ def add_reply(author_id, reply_to_id, content):
 
 
 def remove_replies(thread_id):
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     query = f"DELETE FROM reply WHERE thread = \'{thread_id}\';"
     cursor.execute(query, thread_id)
@@ -82,7 +83,7 @@ def remove_replies(thread_id):
 
 
 def remove_posts_from_author(author_id):
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     query = f"DELETE FROM post WHERE author = \'{author_id}\';"
     cursor.execute(query, author_id)
@@ -90,7 +91,7 @@ def remove_posts_from_author(author_id):
 
 
 def remove_replies_from_author(author_id):
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     query = f"DELETE FROM reply WHERE author = \'{author_id}\';"
     cursor.execute(query, author_id)
@@ -115,7 +116,7 @@ def username_to_user_id(cursor):
     return {username:id for username, id in cursor.fetchall()}
 
 def test():
-    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
     # print(replace_id_with_username(cursor, sorted(get_posts(cursor), key=lambda x: x[1])))
     # print(format_replies(cursor, sorted(get_replies(cursor), key=lambda x: x[2])))
@@ -129,7 +130,7 @@ class Posts(QWidget):
         self.setupUi()
 
     def setupUi(self):
-        self.db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+        self.db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
         self.cursor = self.db.cursor()
 
         # Helpers

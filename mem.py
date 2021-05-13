@@ -246,6 +246,10 @@ class Ui_memMenu(object):
         self.miscBtn.setText(_translate("memMenu", "Miscellaneous"))
         self.forumsBtn.setText(_translate("memMenu", "Forums"))
 
+    def setStack(self, stack):
+        self.stack = stack
+        self.Store.setStack(self.stack)
+
 
 if __name__ == "__main__":
     import sys

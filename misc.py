@@ -246,6 +246,10 @@ class Ui_miscMenu(object):
         self.caseBtn.setText(_translate("miscMenu", "Cases"))
         self.forumsBtn.setText(_translate("miscMenu", "Forums"))
 
+    def setStack(self, stack):
+        self.stack = stack
+        self.Store.setStack(self.stack)
+
 
 if __name__ == "__main__":
     import sys
