@@ -11,6 +11,8 @@ Logged_In = False
 user = []
 account_pages = {}
 sql_password = "root"
+db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
+cursor = db.cursor()
 
 
 class Page(QWidget):
@@ -245,6 +247,8 @@ class StartPage(Page):
         msg.exec()
 
     def logout(self):
+        Sql.signOut(cursor)
+        db.commit()
         global Logged_In, user
         Logged_In = False
         user.clear()
@@ -559,6 +563,10 @@ class LoginPage(Page):
                         user.append(row)
                         user.append(self.UseCaseField.currentText())
                         Logged_In = True
+                        user_id = Sql.fetchFromDatabase(cursor, "customer",
+                                                        condition=f"email = \'{row[1]}\' AND password = \'{row[2]}\'")[0][0]
+                        Sql.signIn(cursor, "customer", user_id)
+                        db.commit()
                         msg = QMessageBox()
                         msg.setWindowTitle("Login Complete")
                         msg.setText("Successfully Logged in as " + row[1])
@@ -568,7 +576,7 @@ class LoginPage(Page):
                         msg.setWindowTitle("Login Failed")
                         msg.setText('Incorrect password')
                         msg.exec()
-            if Logged_In == False:
+            if not Logged_In:
                 print("Login Failed: Incorrect Username or Password")
         elif self.UseCaseField.currentText() == "Store Manager":
             select_user = "SELECT * FROM admin"
@@ -580,6 +588,10 @@ class LoginPage(Page):
                         user.append(row)
                         user.append(self.UseCaseField.currentText())
                         Logged_In = True
+                        user_id = Sql.fetchFromDatabase(cursor, "admin",
+                                                        condition=f"name = \'{row[1]}\' AND password = \'{row[2]}\'")[0][0]
+                        Sql.signIn(cursor, "admin", user_id)
+                        db.commit()
                         msg = QMessageBox()
                         msg.setWindowTitle("Login Complete")
                         msg.setText("Successfully Logged in as " + row[1])
@@ -601,6 +613,10 @@ class LoginPage(Page):
                         user.append(row)
                         user.append(self.UseCaseField.currentText())
                         Logged_In = True
+                        user_id = Sql.fetchFromDatabase(cursor, "clerk",
+                                                        condition=f"name = \'{row[1]}\' AND password = \'{row[2]}\'")[0][0]
+                        Sql.signIn(cursor, "clerk", user_id)
+                        db.commit()
                         msg = QMessageBox()
                         msg.setWindowTitle("Login Complete")
                         msg.setText("Successfully Logged in as " + row[1])
@@ -610,7 +626,7 @@ class LoginPage(Page):
                         msg.setWindowTitle("Login Failed")
                         msg.setText('Incorrect password')
                         msg.exec()
-            if Logged_In == False:
+            if not Logged_In:
                 print("Login Failed: Incorrect Username or Password")
         else:
             select_user = "SELECT * FROM company"
@@ -622,6 +638,10 @@ class LoginPage(Page):
                         user.append(row)
                         user.append(self.UseCaseField.currentText())
                         Logged_In = True
+                        user_id = Sql.fetchFromDatabase(cursor, "company",
+                                                        condition=f"name = \'{row[1]}\' AND password = \'{row[2]}\'")[0][0]
+                        Sql.signIn(cursor, "company", user_id)
+                        db.commit()
                         msg = QMessageBox()
                         msg.setWindowTitle("Login Complete")
                         msg.setText("Successfully Logged in as " + row[1])
