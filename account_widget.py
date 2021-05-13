@@ -392,14 +392,10 @@ class ShoppingCart(Page):
 
     # Purchase all items in shopping cart
     def purchaseEverything(self, customer_id):
-        db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
+        db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
         cursor = db.cursor()
         try:
-            bal = Sql.fetchFromDatabase(cursor, "wallet", condition=f"user = \'{customer_id}\'")
-            if bal == []:
-                balance = 0
-            else:
-                balance = bal[0][1]
+            balance = Sql.fetchFromDatabase(cursor, "wallet", condition=f"user = \'{customer_id}\'")[0][1]
             total_price = 0
             cart = Sql.fetchFromDatabase(cursor, "shoppingcart", condition=f"user = \'{customer_id}\'")
             for i in cart:  # Gathering items in shopping cart belonging to user
@@ -410,40 +406,43 @@ class ShoppingCart(Page):
             elif total_price > balance:
                 Alert("You cannot afford all these items! Please clear shopping cart.")
             else:
-                Alert(f"Purchased! New balance is: {balance - total_price}")
-                # Upon purchasing, add to delivery table and delete from shopping cart
+                Alert(f"Purchased! New balance is: ${balance - total_price}.")
+                # Upon purchasing, add to delivery table, update wallet, and delete from shopping cart
+                statement = f"UPDATE wallet SET amount = \'{balance - total_price}\' WHERE user = \'{customer_id}\'"
+                cursor.execute(statement)
                 statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                             "VALUES(%s, %s, %s, %s, %s, %s, %s);"
                 customer_cart = Sql.fetchFromDatabase(cursor, "shoppingcart", condition=f"user = \'{customer_id}\'")
                 for order in customer_cart:
-                    cursor.execute(statement, (random.randint(500, 999999),  # Auto-incremented shipping number
+                    tracking_num = len(Sql.fetchFromDatabase(cursor, "delivery"))
+                    cursor.execute(statement, (tracking_num + 1,  # Auto-incremented shipping number
                                                order[1],  # Item ID
                                                order[2],  # Item Amount
-                                               3,        # Company will be chosen via bidding
+                                               -1,        # Company will be chosen via bidding
                                                customer_id,
                                                0,         # Unclaimed until clerk confirms
                                                "Processing"))
-                self.clearShoppingCart(customer_id)
+                Sql.clearShoppingCart(self, customer_id)
+                db.commit()
         except Exception as e:
             print(f"Error in 'purchaseEverything': {e}\n")
         db.commit()
-        db.close()
 
 
 class DeliveryPage(Page):
     def __init__(self, stack):
+        db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+        cursor = db.cursor()
         Page.__init__(self, stack)
-        account_pages.update({"DeliveryPage" : self})
+        account_pages.update({"DeliveryPage": self})
         self.vbox = QVBoxLayout()
         self.L1 = QLabel("My Deliveries")
         self.vbox.addWidget(self.L1)
         # Deliveries go Here
-        db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
-        cursor = db.cursor()
         self.items = []
-        result = Sql.fetchFromDatabase(cursor, "delivery", condition = "customer = " + str(user[0][0]))
+        result = Sql.fetchFromDatabase(cursor, "delivery", condition=f"customer = \'{user[0][0]}\'")
         for r in result:
-            i = Sql.fetchFromDatabase(cursor, "item", condition = "id = " + str(r[1]))
+            i = Sql.fetchFromDatabase(cursor, "item", condition=f"id = \'{r[1]}\'")
             self.items.append(i[0])
         for item in range(len(self.items)):
             self.addItem(self.items[item], result[item], cursor)
@@ -458,12 +457,20 @@ class DeliveryPage(Page):
         tracking_num = QLabel("Tracking num: " + str(row[0]))
         amount = QLabel("Amount: " + str(row[2]))
         status = QLabel("Status: " + str(row[6]))
-        dcompany = QLabel("Delivery Company: " + Sql.fetchFromDatabase(cursor, "company", condition = "id = " + str(row[3]))[0][1])
+        if row[3] == -1:
+            dcompany = QLabel("Delivery Company: Undetermined")
+        else:
+            dcompany = QLabel("Delivery Company: " + Sql.fetchFromDatabase(cursor, "company", condition="id = " + str(row[3]))[0][1])
         product_vbox = QVBoxLayout()
         product_name = QLabel(item[1])
         product_description = QLabel(item[4])
         product_image = QLabel()
-        # product_image.setPixmap(QPixmap(item['image']))
+        product_image.setMaximumSize(QtCore.QSize(200, 200))
+        product_image.setStyleSheet("")
+        product_image.setText("")
+        product_image.setPixmap(QtGui.QPixmap(str(item[0]) + ".jpg"))
+        product_image.setScaledContents(True)
+        product_image.setObjectName(str(item[0]))
         product_manufacturer = QLabel(item[3])
         hbox.addWidget(tracking_num)
         hbox.addWidget(product_image)
