@@ -151,7 +151,9 @@ def purchaseEverything(self, customer_id):
             print("You cannot afford all these items! Please clear shopping cart.")
         else:
             print(f"Purchased! New balance is: {balance - total_price}")
-            # Upon purchasing, add to delivery table and delete from shopping cart
+            # Upon purchasing, add to delivery table, update wallet, and delete from shopping cart
+            statement = f"UPDATE wallet SET amount = \'{balance - total_price}\' WHERE user = \'{customer_id}\'"
+            cursor.execute(statement)
             statement = "INSERT INTO delivery(tracking_num, item, amount, company, customer, claimed, status) " \
                         "VALUES(%s, %s, %s, %s, %s, %s, %s);"
             customer_cart = fetchFromDatabase(cursor, "shoppingcart", condition=f"user = \'{customer_id}\'")
@@ -400,7 +402,31 @@ def reportUser(cursor, user_id, user_type, reason):
         if fetchFromDatabase(cursor, f"{user_type}report", condition=f"{user_type}_id = {user_id}"):
             report_count = fetchFromDatabase(cursor, f"{user_type}report", condition=f"{user_type}_id = {user_id}")[0][1]
         cursor.execute(statement, (user_id, report_count, reason))
-        print(f"Banned user {user_id} for: {reason}")
+        print(f"Reported user {user_id} for: {reason}")
     except Exception as e:
-        print(f"Error in \'banUser\': {e}\n")
+        print(f"Error in \'reportUser\': {e}\n")
 
+# ********** CREDIT CARD / WALLET ***********
+def addCreditCard(cursor, user_id, name, number, expiration):
+    statement = f"INSERT INTO creditcard(user, name, number, expiration) " \
+                "VALUES(%s, %s, %s, %s);"
+    try:
+        cursor.execute(statement, (user_id, name, number, expiration))
+        print("Successfully added credit card.")
+    except Exception as e:
+        print(f"Error in \'addCreditCard\': {e}\n")
+
+def addFundsToWallet(cursor, user_id, amount):
+    statement = "INSERT INTO wallet(user, amount) VALUES(%s, %s);"
+    try:
+        cursor.execute(statement, (user_id, amount))
+        print(f"New wallet created.")
+    except Exception as e:
+        print(f"Possible that wallet exists, must update: {e}\n")
+        current_wallet_amount = fetchFromDatabase(cursor, "wallet", condition=f"user = {user_id}")[0][1]
+        statement = f"UPDATE wallet SET amount = \'{amount + current_wallet_amount}\' WHERE user = \'{user_id}\'"
+        try:
+            cursor.execute(statement)
+            print(f"Wallet updated to ${amount + current_wallet_amount}.")
+        except Exception as e:
+            print(f"Error in 'addFundsToWallet': {e}\n")
