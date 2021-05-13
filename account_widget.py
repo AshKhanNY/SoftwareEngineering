@@ -124,7 +124,9 @@ class LoginPage(Page):
         self.vbox.addLayout(self.form)
         self.buttonLayout = QHBoxLayout()
         self.loginButton = QPushButton("Login")
-        #self.loginButton.clicked.connect(self.login)
+
+        self.loginButton.clicked.connect(self.login)
+
         self.cancelButton = QPushButton("Cancel")
         self.cancelButton.clicked.connect(self.gotoStartPage)
         self.buttonLayout.addWidget(self.loginButton)

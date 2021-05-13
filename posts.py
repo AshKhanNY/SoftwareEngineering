@@ -55,7 +55,7 @@ def add_post(author_id, content):
     query = "INSERT INTO post(author, content) VALUES(%s, %s)"
     try:
         cursor.execute(query, (author_id, content))
-        print("Succesfully added a post")
+        print("Successfully added a post")
     except:
         print("Error adding a post")
     db.commit()
@@ -67,7 +67,7 @@ def add_reply(author_id, reply_to_id, content):
     query = "INSERT INTO reply(author, thread, content) VALUES(%s, %s, %s)"
     try:
         cursor.execute(query, (author_id, reply_to_id, content))
-        print("Succesfully replied to a post")
+        print("Successfully replied to a post")
     except:
         print("Error adding a reply")
     db.commit()
@@ -89,6 +89,14 @@ def remove_posts_from_author(author_id):
     db.commit()
 
 
+def remove_replies_from_author(author_id):
+    db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
+    cursor = db.cursor()
+    query = f"DELETE FROM reply WHERE author = \'{author_id}\';"
+    cursor.execute(query, author_id)
+    db.commit()
+
+
 # Fetching specific values from database
 def fetchFromDatabase(cursor, table, item="*", condition=""):
     try:
@@ -101,12 +109,16 @@ def fetchFromDatabase(cursor, table, item="*", condition=""):
         print(f"Error in \'fetchFromDatabase\': {e}")
         return False
 
+def username_to_user_id(cursor):
+    query = "SELECT name, id FROM customer"
+    cursor.execute(query)
+    return {username:id for username, id in cursor.fetchall()}
+
 def test():
     db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
     cursor = db.cursor()
-    print(replace_id_with_username(cursor, sorted(get_posts(cursor), key=lambda x: x[1])))
-    print(format_replies(cursor, sorted(get_replies(cursor), key=lambda x: x[2])))
-
+    # print(replace_id_with_username(cursor, sorted(get_posts(cursor), key=lambda x: x[1])))
+    # print(format_replies(cursor, sorted(get_replies(cursor), key=lambda x: x[2])))
 
 test()
 
@@ -114,11 +126,19 @@ test()
 class Posts(QWidget):
     def __init__(self):
         QWidget.__init__(self)
+        self.setupUi()
+
+    def setupUi(self):
         self.db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
         self.cursor = self.db.cursor()
 
+        # Helpers
+        self.current_user = 7
+        self.user_dict = username_to_user_id(self.cursor)
+
         self.vbox = QVBoxLayout()
 
+        self.input = QTextEdit()
         self.posts = replace_id_with_username(self.cursor, sorted(get_posts(self.cursor), key=lambda x: x[1]))
         self.replies = format_replies(self.cursor, sorted(get_replies(self.cursor), key=lambda x: x[2]))
 
@@ -156,6 +176,7 @@ class Posts(QWidget):
         # Add Reply Functionality
         reply_button = QPushButton("Reply")
         reply_button.setFixedSize(50, 20)
+        reply_button.clicked.connect(partial(self.add_reply_to_database, self.input, self.user_dict[post[0]]))
 
         # Add Report Functionality
         report_button = QPushButton("Report")
@@ -203,41 +224,53 @@ class Posts(QWidget):
     def writePost(self):
         hbox = QHBoxLayout()
 
-        hbox = QHBoxLayout()
-
         username = QLabel("You")
         font = QFont()
         font.setBold(True)
         username.setFont(font)
 
-        content = QTextEdit("Add a description!")
-        content.setObjectName("Description")
+        self.input = QTextEdit("Add a description!")
+        self.input.setObjectName("Description")
 
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(content.sizePolicy().hasHeightForWidth())
-        content.setSizePolicy(size_policy)
+        size_policy.setHeightForWidth(self.input.sizePolicy().hasHeightForWidth())
+        self.input.setSizePolicy(size_policy)
 
         font.setPointSize(12)
         font.setBold(False)
-        content.setFont(font)
+        self.input.setFont(font)
 
         # Add Report Functionality
         submit_button = QPushButton("Submit")
         submit_button.setFixedSize(50, 20)
 
         hbox.addWidget(username)
-        hbox.addWidget(content)
+        hbox.addWidget(self.input)
 
         hbox.addWidget(submit_button)
-        submit_button.clicked.connect(partial(self.add_post_to_database, content))
+        submit_button.clicked.connect(partial(self.add_post_to_database, self.input))
 
         self.vbox.addLayout(hbox)
 
+    def add_reply_to_database(self, content, author_id):
+        taboo_list = fetchFromDatabase(self.cursor, "taboo")
+        text = content.toPlainText()
+        for word in taboo_list:
+            if word[0] in text:
+                text = text.replace(word[0], "*" * len(word[0]))
+        content.setPlainText(text)
+
+        print(text)
+        # Adding Reply into the database
+        print(author_id)
+        add_reply(self.current_user, author_id, text)
+
+        self.setupUi()
+
     def add_post_to_database(self, content):
         taboo_list = fetchFromDatabase(self.cursor, "taboo")
-        print(taboo_list)
         text = content.toPlainText()
         for word in taboo_list:
             if word[0] in text:
@@ -245,6 +278,8 @@ class Posts(QWidget):
         content.setPlainText(text)
 
         # Posting to the database
-        add_post(1, text)
+        # add_post(7, text)
+        remove_posts_from_author(7)
 
-        print(text)
+        # Refresh the Forum page
+        self.setupUi()

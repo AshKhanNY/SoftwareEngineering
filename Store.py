@@ -2,6 +2,8 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 import mysql.connector
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 def Connect(item_type):
     db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
@@ -36,7 +38,20 @@ class Store(QWidget):
         product_image = QLabel()
 
         #product_image.setPixmap(QPixmap(str(item[0]) + ".jpg"))
-        product_image.setStyleSheet(f"border-image: url({item[0]}.jpg) 0 0 0 0 stretch stretch;")
+        #product_image.setStyleSheet(f"border-image: url({item[0]}.jpg) 0 0 0 0 stretch stretch;")
+
+        product_image.setMaximumSize(QtCore.QSize(200, 200))
+        product_image.setStyleSheet("")
+        product_image.setText("")
+        product_image.setPixmap(QtGui.QPixmap(str(item[0]) + ".jpg"))
+        product_image.setScaledContents(True)
+        product_image.setObjectName(str(item[0]))
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(product_image.sizePolicy().hasHeightForWidth())
+        product_image.setSizePolicy(sizePolicy)
 
         product_manufacturer = QLabel(item[3])
         hbox.addWidget(product_image)

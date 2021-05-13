@@ -220,7 +220,6 @@ class Ui_forumsMenu(object):
         self.Posts = posts.Posts()
         self.verticalGroupLayout.addWidget(self.Posts)
 
-
         self.contentLayout.addWidget(self.verticalGroupBox)
         self.rightWidget = QtWidgets.QWidget(self.contentGroupBox)
         self.rightWidget.setMinimumSize(QtCore.QSize(200, 0))
