@@ -244,9 +244,10 @@ class StartPage(Page):
         db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
         cursor = db.cursor()
         requests = Sql.fetchFromDatabase(cursor, "supplyrequest")
-        text = ""
+        text = "ALL SUPPLY REQUESTS\n\n"
         for request in requests:
-            text = text + str(request) + "\n"
+            company_name = Sql.fetchFromDatabase(cursor, "company", condition=f"id = {request[1]}")[0][1]
+            text = f"{text}{company_name}: {request[2]}\n"
         return text
     
     def View(self, table):

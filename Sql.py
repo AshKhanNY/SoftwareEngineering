@@ -403,3 +403,4 @@ def reportUser(cursor, user_id, user_type, reason):
         print(f"Banned user {user_id} for: {reason}")
     except Exception as e:
         print(f"Error in \'banUser\': {e}\n")
+
