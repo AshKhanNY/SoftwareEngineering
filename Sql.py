@@ -277,7 +277,7 @@ def viewBids(self):
     cursor = db.cursor()
     bid_list = fetchFromDatabase(cursor, "bid")
     for bid in bid_list:
-        print(bid[0])
+        print(bid)
 
 # View deliveries based on company ID
 def viewCompanyDeliveries(self, user_id):

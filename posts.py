@@ -2,7 +2,7 @@ from functools import partial
 
 import mysql.connector
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy, QTextEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy, QTextEdit, QMessageBox
 
 sql_password = "root"
 
@@ -115,6 +115,14 @@ def username_to_user_id(cursor):
     cursor.execute(query)
     return {username:id for username, id in cursor.fetchall()}
 
+def getSignedIn(cursor):
+    user = []
+    try:
+        user = fetchFromDatabase(cursor, "user", condition="signed_in = 1")[0]
+    except Exception as e:
+        print(f"Error in \'getSignedInType\': {e}")
+    return user
+
 def test():
     db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
     cursor = db.cursor()
@@ -134,12 +142,12 @@ class Posts(QWidget):
         self.cursor = self.db.cursor()
 
         # Helpers
-        self.current_user = 7
+        self.current_user = getSignedIn(self.cursor)
         self.user_dict = username_to_user_id(self.cursor)
 
         self.vbox = QVBoxLayout()
 
-        self.input = QTextEdit()
+        self.input = QTextEdit("Wow. I agree!")
         self.posts = replace_id_with_username(self.cursor, sorted(get_posts(self.cursor), key=lambda x: x[1]))
         self.replies = format_replies(self.cursor, sorted(get_replies(self.cursor), key=lambda x: x[2]))
 
@@ -255,7 +263,17 @@ class Posts(QWidget):
 
         self.vbox.addLayout(hbox)
 
+    def valid_user(self):
+        return self.current_user[1] == "customer"
+
     def add_reply_to_database(self, content, author_id):
+        if not self.valid_user():
+            msg = QMessageBox()
+            msg.setText("Must be signed in as registered customer!")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QMessageBox.Close)
+            msg.exec()
+            return
         taboo_list = fetchFromDatabase(self.cursor, "taboo")
         text = content.toPlainText()
         for word in taboo_list:
@@ -263,14 +281,28 @@ class Posts(QWidget):
                 text = text.replace(word[0], "*" * len(word[0]))
         content.setPlainText(text)
 
-        print(text)
+        print("Text:", text)
         # Adding Reply into the database
         print(author_id)
-        add_reply(self.current_user, author_id, text)
+        add_reply(self.current_user[0], author_id, text)
+        self.db.commit()
+
+        msg = QMessageBox()
+        msg.setText("Successfully added a reply! Restart to see your post")
+        msg.setWindowTitle("Warning")
+        msg.setStandardButtons(QMessageBox.Close)
+        msg.exec()
 
         self.setupUi()
 
     def add_post_to_database(self, content):
+        if not self.valid_user():
+            msg = QMessageBox()
+            msg.setText("Must be signed in as registered customer!")
+            msg.setWindowTitle("Warning")
+            msg.setStandardButtons(QMessageBox.Close)
+            msg.exec()
+            return
         taboo_list = fetchFromDatabase(self.cursor, "taboo")
         text = content.toPlainText()
         for word in taboo_list:
@@ -279,8 +311,13 @@ class Posts(QWidget):
         content.setPlainText(text)
 
         # Posting to the database
-        # add_post(7, text)
-        remove_posts_from_author(7)
+        add_post(self.current_user[0], text)
+        #remove_posts_from_author(7)
+        msg = QMessageBox()
+        msg.setText("Successfully added a post! Restart to see your post")
+        msg.setWindowTitle("Warning")
+        msg.setStandardButtons(QMessageBox.Close)
+        msg.exec()
 
         # Refresh the Forum page
         self.setupUi()
