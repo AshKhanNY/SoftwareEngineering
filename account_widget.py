@@ -146,6 +146,9 @@ class StartPage(Page):
                 self.viewDeliveryBtn = QPushButton("Deliveries")
                 self.viewDeliveryBtn.clicked.connect(partial(self.View, "delivery"))
                 self.grid.addWidget(self.viewDeliveryBtn, 2, 1)
+                self.grid.addWidget(QLabel("Edit Current Deliveries"), 3, 0)
+                self.viewDeliveryBtn = QPushButton("Edit Deliveries")
+                self.grid.addWidget(self.viewDeliveryBtn, 3, 1)
             elif user[1] == "Supply Company":
                 # Computer Parts Company
                 self.grid.addWidget(QLabel("Make Supply Request"), 1, 0)
@@ -251,9 +254,16 @@ class StartPage(Page):
         db = mysql.connector.connect(user="root", passwd=sql_password, host="localhost", db="pa_store")
         cursor = db.cursor()
         deliveries = Sql.fetchFromDatabase(cursor, "delivery", condition=f"company = \'{user_id}\' AND claimed = \'1\'")
-        text = ""
+        print(deliveries)
+        text = "ALL CONFIRMED DELIVERIES\n"
         for delivery in deliveries:
-            text = text + str(delivery) + "\n"
+            item_name = Sql.fetchFromDatabase(cursor, "item", condition=f"id = {delivery[1]}")[0][1]
+            customer = Sql.fetchFromDatabase(cursor, "customer", condition=f"id = {delivery[4]}")[0][1]
+            company = Sql.fetchFromDatabase(cursor, "company", condition=f"id = {user_id}")[0][1]
+            text += f"Tracking Num: {delivery[0]}\n" \
+                    f"{delivery[2]} count(s) of: {item_name}\n" \
+                    f"From: {company}, To: {customer}\n" \
+                    f"Status: {delivery[6]}\n\n"
         db.close()
         return text
 
