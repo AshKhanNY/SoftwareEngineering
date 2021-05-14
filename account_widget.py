@@ -146,8 +146,10 @@ class StartPage(Page):
             elif user[1] == "Supply Company":
                 # Computer Parts Company
                 self.grid.addWidget(QLabel("Make Supply Request"), 1, 0)
+                self.sellLine = QLineEdit()
+                self.grid.addWidget(self.sellLine, 1, 1)
                 self.sellBtn = QPushButton("Request")
-                self.grid.addWidget(self.sellBtn, 1, 1)
+                self.grid.addWidget(self.sellBtn, 1, 2)
         else:
             self.Login = QPushButton("Login")
             self.Login.clicked.connect(self.gotoLoginPage)
