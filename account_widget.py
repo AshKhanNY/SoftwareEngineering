@@ -153,6 +153,7 @@ class StartPage(Page):
                 self.grid.addWidget(self.viewDeliveryBtn, 2, 1)
                 self.grid.addWidget(QLabel("Edit Current Deliveries"), 3, 0)
                 self.viewDeliveryBtn = QPushButton("Edit Deliveries")
+                self.viewDeliveryBtn.clicked.connect(self.gotoEditDelivery)
                 self.grid.addWidget(self.viewDeliveryBtn, 3, 1)
             elif user[1] == "Supply Company":
                 # Computer Parts Company
@@ -197,6 +198,10 @@ class StartPage(Page):
     def gotoWallet(self):
         wallet = WalletPage(self.stack)
         self.stack.setCurrentWidget(wallet)
+    
+    def gotoEditDelivery(self):
+        editdelivery = EditDeliveryPage(self.stack)
+        self.stack.setCurrentWidget(editdelivery)
 
     # Display taboo list word for word
     def getTabooList(self):
@@ -602,7 +607,21 @@ class WalletPage(Page):
     def gotoStartPage(self):
         self.stack.setCurrentWidget(account_pages["StartPage"])
        
+class EditDeliveryPage(Page):
+    def __init__(self, stack):
+        Page.__init__(self, stack)
+        account_pages.update({"EditDeliveryPage": self})
+        self.vbox = QVBoxLayout()
+        self.current_user = Sql.getSignedIn(cursor)
+        self.BackBtn = QPushButton("Exit Delivery")
+        self.BackBtn.clicked.connect(self.gotoStartPage)
+        self.vbox.addWidget(self.BackBtn)
+        self.setLayout(self.vbox)
 
+    def gotoStartPage(self):
+        self.stack.setCurrentWidget(account_pages["StartPage"])
+
+        
 class ComplainsPage(Page):
     def __init__(self, stack):
         Page.__init__(self, stack)
