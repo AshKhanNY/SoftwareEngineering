@@ -580,6 +580,20 @@ class WalletPage(Page):
             hbox.addWidget(exp)
             self.vbox.addLayout(hbox)
 
+        self.add_funds = QPushButton("Add Funds")
+        self.add_cc = QPushButton("Add Credit Card")
+
+        self.input = QLineEdit()
+        #self.add_funds.clicked.connect()
+
+        self.vbox.addWidget(QLabel("Please input how much money you would like to add"))
+        self.vbox.addWidget(self.input)
+        self.vbox.addWidget(self.add_funds)
+
+        self.vbox.addWidget(QLabel("Please input how much money you would like to add"))
+        self.vbox.addWidget(QLineEdit())
+        self.vbox.addWidget(QPushButton("Add Credit Card"))
+
         self.BackBtn = QPushButton("Exit Wallet")
         self.BackBtn.clicked.connect(self.gotoStartPage)
         self.vbox.addWidget(self.BackBtn)
