@@ -288,7 +288,21 @@ class StartPage(Page):
             company_name = Sql.fetchFromDatabase(cursor, "company", condition=f"id = {request[1]}")[0][1]
             text = f"{text}{company_name}: {request[2]}\n"
         return text
-    
+
+    def viewBanned(self):
+        banned_customers = Sql.viewBannedList(cursor, "customer")
+        banned_companies = Sql.viewBannedList(cursor, "company")
+        text = "ALL BANNED CUSTOMERS\n"
+        for customer in banned_customers:
+            print(customer)
+            name = Sql.fetchFromDatabase(cursor, "customer", "name", f"id = {customer[0]}")[0][0]
+            text += f"{name}, Banned for: {customer[1]}\n"
+        text += "\nALL BANNED COMPANIES\n"
+        for company in banned_companies:
+            name = Sql.fetchFromDatabase(cursor, "company", "name", f"id = {company[0]}")[0][0]
+            text += f"{name}, Banned for: {company[1]}\n"
+        return text
+
     def View(self, table):
         msg = QMessageBox()
         msg.setText("")
@@ -302,6 +316,8 @@ class StartPage(Page):
             msg.setText(self.viewCompanyDeliveries(user[0][0]))
         elif table == "requests":
             msg.setText(self.viewSupplyRequests())
+        elif table == "blacklist":
+            msg.setText(self.viewBanned())
         msg.exec()
 
     def logout(self):
