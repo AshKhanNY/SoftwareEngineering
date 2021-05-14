@@ -45,6 +45,7 @@ class MyStack(QStackedLayout):
         self.pages['pbMenu'].retranslateUi(mw)
 
 app = QApplication(sys.argv)
+app.setStyleSheet("QLabel{font-size: 12pt;}")
 mw = QMainWindow()
 w = QWidget(mw)
 stack = MyStack()

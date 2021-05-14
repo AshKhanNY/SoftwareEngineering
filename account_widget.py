@@ -643,6 +643,8 @@ class RegisterPage(Page):
         self.PasswordField = QLineEdit()
         self.NameLabel = QLabel("User Name: ")
         self.NameField = QLineEdit()
+        self.CCLabel = QLabel("Credit Card: ")
+        self.CCField = QLineEdit()
         self.form = QFormLayout()
         # Add Widgets to Form
         self.form.setWidget(0, QFormLayout.LabelRole, self.UseCaseLabel)
@@ -653,6 +655,8 @@ class RegisterPage(Page):
         self.form.setWidget(3, QFormLayout.FieldRole, self.PasswordField)
         self.form.setWidget(1, QFormLayout.LabelRole, self.NameLabel)
         self.form.setWidget(1, QFormLayout.FieldRole, self.NameField)
+        self.form.setWidget(4, QFormLayout.LabelRole, self.CCLabel)
+        self.form.setWidget(4, QFormLayout.FieldRole, self.CCField)
         self.formWidget = QWidget()
         self.formWidget.setLayout(self.form)
         self.vbox.addWidget(self.formWidget)
