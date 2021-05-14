@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QComboBox, QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QComboBox, QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QLabel
 
 import mysql.connector
 
@@ -48,23 +48,31 @@ class Complain(QWidget):
         self.db = mysql.connector.connect(user="root", passwd="root", host="localhost", db="pa_store")
         self.cursor = self.db.cursor()
 
-        self.vbox = QVBoxLayout()
-        self.hbox = QHBoxLayout()
+        self.vertical_layout = QVBoxLayout()
+        self.horizontal_selectors = QHBoxLayout()
 
+        self.prompt = QLabel("Please enter a detailed report about the user you want to report")
         self.user_types = ["Customer", "Company", "Clerk"]
-        self.select_user_type = QComboBox(self.user_types)
-        self.select_user = QComboBox(self.get_all_users())
+        self.select_user_type = QComboBox()
+        self.select_user_type.addItems(self.user_types)
 
-        self.hbox.addWidget(self.select_user_type)
-        self.hbox.addWidget(self.select_user)
+        self.select_user = QComboBox()
+        self.select_user.addItems(get_all_users(self.cursor))
+
+        self.horizontal_selectors.addWidget(self.select_user_type)
+        self.horizontal_selectors.addWidget(self.select_user)
 
         self.input_field = QTextEdit("Add a description here!")
-        self.submit_button = QPushButton("Submit")
-        self.submit_button.clicked.connect(self.post_in_database())
+        self.submit_complaint = QPushButton("Submit")
+        self.submit_complaint.clicked.connect(self.post_in_database)
 
-        self.vbox.addLayout(self.hbox)
-        self.vbox.addWidget(self.input_field)
-        self.vbox.addWidget(self.submit_button)
+
+        self.vertical_layout.addLayout(self.horizontal_selectors)
+        self.vertical_layout.addWidget(self.prompt)
+        self.vertical_layout.addWidget(self.input_field)
+        self.vertical_layout.addWidget(self.submit_complaint)
+
+        self.setLayout(self.vertical_layout)
 
     def post_in_database(self):
         text = self.input_field.toPlainText()

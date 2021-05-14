@@ -8,6 +8,7 @@ from functools import partial
 import random
 
 import bids
+import complains
 
 Logged_In = False
 user = []
@@ -80,13 +81,18 @@ class StartPage(Page):
                 self.grid.addWidget(QLabel("View Your Shopping Cart"), 4, 0)
                 self.grid.addWidget(QLabel("Track Your Deliveries"), 5, 0)
                 self.shoppingCartBtn = QPushButton("My Shopping Cart")
+
                 self.shoppingCartBtn.clicked.connect(self.gotoShoppingCart)
                 self.trackerBtn = QPushButton("Track Deliveries")
+
                 self.trackerBtn.clicked.connect(self.gotoDeliveries)
                 self.grid.addWidget(self.shoppingCartBtn, 4, 1)
                 self.grid.addWidget(self.trackerBtn, 5, 1)
+
                 self.grid.addWidget(QLabel("File a Complaint"), 6, 0)
                 self.ComplainBtn = QPushButton("Complain")
+                self.ComplainBtn.clicked.connect(self.gotoComplain)
+
                 self.grid.addWidget(self.ComplainBtn, 6, 1)
             elif user[1] == "Store Manager":
                 # Admin
@@ -170,6 +176,10 @@ class StartPage(Page):
     def gotoBidding(self):
         bidding = BiddingPage(self.stack)
         self.stack.setCurrentWidget(bidding)
+
+    def gotoComplain(self):
+        complains = ComplainsPage(self.stack)
+        self.stack.setCurrentWidget(complains)
 
     # Display taboo list word for word
     def getTabooList(self):
@@ -505,6 +515,22 @@ class BiddingPage(Page):
     def gotoStartPage(self):
         self.stack.setCurrentWidget(account_pages["StartPage"])
 
+class ComplainsPage(Page):
+    def __init__(self, stack):
+        Page.__init__(self, stack)
+        account_pages.update({"ComplainsPage": self})
+        self.vbox = QVBoxLayout()
+
+        self.Complains = complains.Complain()
+        self.vbox.addWidget(self.Complains)
+
+        self.BackBtn = QPushButton("Exit Complain Page")
+        self.BackBtn.clicked.connect(self.gotoStartPage)
+        self.vbox.addWidget(self.BackBtn)
+        self.setLayout(self.vbox)
+
+    def gotoStartPage(self):
+        self.stack.setCurrentWidget(account_pages["StartPage"])
 
 
 class RegisterPage(Page):
