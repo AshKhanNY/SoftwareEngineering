@@ -27,7 +27,7 @@ def test():
     print(company_id_to_name(cursor))
 
 
-test()
+#test()
 
 def message_box(message):
     msg = QMessageBox()
