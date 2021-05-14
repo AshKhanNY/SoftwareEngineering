@@ -533,6 +533,22 @@ class BiddingPage(Page):
     def gotoStartPage(self):
         self.stack.setCurrentWidget(account_pages["StartPage"])
 
+
+class WalletPage(Page):
+    def __init__(self, stack):
+        Page.__init__(self, stack)
+        account_pages.update({"WalletPage": self})
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(QLabel("My Wallet"))
+        self.BackBtn = QPushButton("Exit Wallet")
+        self.BackBtn.clicked.connect(self.gotoStartPage)
+        self.vbox.addWidget(self.BackBtn)
+        self.setLayout(self.vbox)
+        
+    def gotoStartPage(self):
+        self.stack.setCurrentWidget(account_pages["StartPage"])
+       
+
 class ComplainsPage(Page):
     def __init__(self, stack):
         Page.__init__(self, stack)
