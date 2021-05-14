@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QFont
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector
 import Sql
@@ -94,6 +94,11 @@ class StartPage(Page):
                 self.ComplainBtn.clicked.connect(self.gotoComplain)
 
                 self.grid.addWidget(self.ComplainBtn, 6, 1)
+
+                self.grid.addWidget(QLabel("View Your Wallet"), 7, 0)
+                self.wallet_btn = QPushButton("Wallet")
+                self.wallet_btn.clicked.connect(self.gotoWallet)
+                self.grid.addWidget(self.wallet_btn, 7, 1)
             elif user[1] == "Store Manager":
                 # Admin
                 self.grid.addWidget(QLabel("View Taboo List"), 1, 0)
@@ -182,6 +187,10 @@ class StartPage(Page):
     def gotoComplain(self):
         complains = ComplainsPage(self.stack)
         self.stack.setCurrentWidget(complains)
+
+    def gotoWallet(self):
+        wallet = WalletPage(self.stack)
+        self.stack.setCurrentWidget(wallet)
 
     # Display taboo list word for word
     def getTabooList(self):
@@ -541,7 +550,24 @@ class WalletPage(Page):
         Page.__init__(self, stack)
         account_pages.update({"WalletPage": self})
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(QLabel("My Wallet"))
+
+        self.current_user = Sql.getSignedIn(cursor)
+
+        self.credit_cards = Sql.fetchFromDatabase(cursor, "creditcard", "number, expiration", f"user={self.current_user[0]}")
+        self.amount_money = Sql.fetchFromDatabase(cursor, "wallet", "amount", f"user={self.current_user[0]}")
+
+        self.vbox.addWidget(QLabel("My Wallet Balance: $" + str(self.amount_money[0][0])))
+
+        self.vbox.addWidget(QLabel("Credit Cards and Expiration Date"))
+        for number, expiration in self.credit_cards:
+            print(number)
+            hbox = QHBoxLayout()
+            cc = QLabel(number)
+            exp = QLabel(expiration.strftime('%m/%d/%Y'))
+            hbox.addWidget(cc)
+            hbox.addWidget(exp)
+            self.vbox.addLayout(hbox)
+
         self.BackBtn = QPushButton("Exit Wallet")
         self.BackBtn.clicked.connect(self.gotoStartPage)
         self.vbox.addWidget(self.BackBtn)
