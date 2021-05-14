@@ -418,10 +418,12 @@ class ShoppingCart(Page):
                     cursor.execute(statement, (tracking_num + 1,  # Auto-incremented shipping number
                                                order[1],  # Item ID
                                                order[2],  # Item Amount
-                                               -1,        # Company will be chosen via bidding
+                                               8,         # No company (for now)
                                                customer_id,
                                                0,         # Unclaimed until clerk confirms
                                                "Processing"))
+                    statement = f"INSERT INTO bid(company, delivery, amount) VALUES (%s, %s, %s);"
+                    cursor.execute(statement, (8, tracking_num + 1, 0))
                 Sql.clearShoppingCart(self, customer_id)
                 db.commit()
         except Exception as e:
