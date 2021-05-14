@@ -133,6 +133,9 @@ class StartPage(Page):
                 self.bidBtn = QPushButton("View Bids")
                 self.bidBtn.clicked.connect(partial(self.View, "bid"))
                 self.grid.addWidget(self.bidBtn, 1, 1)
+                self.grid.addWidget(QLabel("Decide on Delivery Company"), 2, 0)
+                self.bidBtn = QPushButton("Confirm Bids")
+                self.grid.addWidget(self.bidBtn, 2, 1)
             elif user[1] == "Delivery Company":
                 # Delivery Company
                 self.grid.addWidget(QLabel("Bid on Deliveries"), 1, 0)
@@ -306,7 +309,6 @@ class StartPage(Page):
         banned_companies = Sql.viewBannedList(cursor, "company")
         text = "ALL BANNED CUSTOMERS\n"
         for customer in banned_customers:
-            print(customer)
             name = Sql.fetchFromDatabase(cursor, "customer", "name", f"id = {customer[0]}")[0][0]
             text += f"{name}, Banned for: {customer[1]}\n"
         text += "\nALL BANNED COMPANIES\n"
