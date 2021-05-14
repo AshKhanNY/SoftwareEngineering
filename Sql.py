@@ -336,6 +336,16 @@ def editDeliveryStatus(self, tracking_num, new_status):
         print(f"Error in \'editDeliveryStatus\': {e}\n")
     db.commit()
 
+# Confirm bid
+def confirmBid(cursor, delivery_num, company):
+    deli_statement = f"UPDATE delivery SET status = Confirmed, company = {company} WHERE tracking_num = \'{delivery_num}\'"
+    bid_statement = f"DELETE FROM bid WHERE delivery = {delivery_num}"
+    try:
+        cursor.execute(deli_statement)
+        cursor.execute(bid_statement)
+    except Exception as e:
+        print(f"Error in \'confirmBid\': {e}\n")
+
 # *************** SUPPLIES *****************
 # View Supply Request
 def viewSupplyRequests(self):
