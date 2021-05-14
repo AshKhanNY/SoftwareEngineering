@@ -298,7 +298,21 @@ class StartPage(Page):
             company_name = Sql.fetchFromDatabase(cursor, "company", condition=f"id = {request[1]}")[0][1]
             text = f"{text}{company_name}: {request[2]}\n"
         return text
-    
+
+    def viewBanned(self):
+        banned_customers = Sql.viewBannedList(cursor, "customer")
+        banned_companies = Sql.viewBannedList(cursor, "company")
+        text = "ALL BANNED CUSTOMERS\n"
+        for customer in banned_customers:
+            print(customer)
+            name = Sql.fetchFromDatabase(cursor, "customer", "name", f"id = {customer[0]}")[0][0]
+            text += f"{name}, Banned for: {customer[1]}\n"
+        text += "\nALL BANNED COMPANIES\n"
+        for company in banned_companies:
+            name = Sql.fetchFromDatabase(cursor, "company", "name", f"id = {company[0]}")[0][0]
+            text += f"{name}, Banned for: {company[1]}\n"
+        return text
+
     def View(self, table):
         msg = QMessageBox()
         msg.setText("")
@@ -312,6 +326,8 @@ class StartPage(Page):
             msg.setText(self.viewCompanyDeliveries(user[0][0]))
         elif table == "requests":
             msg.setText(self.viewSupplyRequests())
+        elif table == "blacklist":
+            msg.setText(self.viewBanned())
         msg.exec()
 
     def logout(self):
@@ -428,10 +444,12 @@ class ShoppingCart(Page):
                     cursor.execute(statement, (tracking_num + 1,  # Auto-incremented shipping number
                                                order[1],  # Item ID
                                                order[2],  # Item Amount
-                                               -1,        # Company will be chosen via bidding
+                                               8,         # No company (for now)
                                                customer_id,
                                                0,         # Unclaimed until clerk confirms
                                                "Processing"))
+                    statement = f"INSERT INTO bid(company, delivery, amount) VALUES (%s, %s, %s);"
+                    cursor.execute(statement, (8, tracking_num + 1, 0))
                 Sql.clearShoppingCart(self, customer_id)
                 db.commit()
         except Exception as e:

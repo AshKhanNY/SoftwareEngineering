@@ -394,6 +394,9 @@ def banUser(cursor, user_id, user_type, reason):
 def viewReportList(cursor, user_type):
     return fetchFromDatabase(cursor, f"{user_type}report")
 
+def viewBannedList(cursor, user_type):
+    return fetchFromDatabase(cursor, f"blacklisted{user_type}")
+
 def reportUser(cursor, user_id, user_type, reason):
     statement = f"INSERT INTO {user_type}report({user_type}_id, num_reported, reason) " \
                 "VALUES(%s, %s, %s);"
